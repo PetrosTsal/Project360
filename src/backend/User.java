@@ -19,7 +19,7 @@ public class User {
         this.debt = debt;
     }
 
-    public String getUsername() {s
+    public String getUsername() {
         return username;
     }
 
