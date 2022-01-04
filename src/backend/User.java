@@ -1,5 +1,11 @@
 package backend;
 
+import javax.jws.soap.SOAPBinding;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class User {
     // attributes
     private String username;
@@ -57,6 +63,48 @@ public class User {
 
     public void setDebt(float debt) {
         this.debt = debt;
+    }
+
+    public static User getUser(String username , String password) throws ClassNotFoundException , SQLException {
+        User user = null ;
+        Statement stmnt = null;
+        Connection con = null;
+
+        try {
+            con = DB.getConnection();
+
+            stmnt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT * FROM users ")
+                    .append(" WHERE ")
+                    .append(" user_name = ").append("'").append(username).append("';");
+
+            stmnt.execute(insQuery.toString());
+
+            ResultSet res = stmnt.getResultSet();
+
+            if (res.next() == true) {
+                user = new User();
+                user.setUsername(res.getString("username"));
+                user.setPassword(res.getString("password"));
+                user.setName(res.getString("name"));
+                user.setAccount_no(res.getInt("account_no"));
+                user.setDebt(res.getFloat("debt"));
+
+            } else {
+                System.out.println("User with user name " + username + "was not found");
+            }
+        } catch (SQLException ex) {
+            // Log exception
+            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            //closeDBConnection(stmt, con);
+        }
+
+        return user;
     }
 // functions
 }

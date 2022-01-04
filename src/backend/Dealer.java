@@ -1,9 +1,8 @@
 package backend;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Dealer extends User{
     // attributes
@@ -48,7 +47,7 @@ public class Dealer extends User{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT * FROM dealers ")
+            insQuery.append("SELECT * FROM dealer ")
                     .append("WHERE ")
                     .append("Username = ").append("'").append(Username).append("'").append("AND Password = ").append("'").append(Password).append("'");
 
@@ -64,7 +63,7 @@ public class Dealer extends User{
                 dealer.setAccount_no(res.getInt("account_no"));
                 dealer.setDebt(res.getFloat("debt"));
                 dealer.setCommission(res.getFloat("commission"));
-                dealer.setEarnings(res.getInt("earnings"));
+                dealer.setEarnings(res.getFloat("earnings"));
 
             } else {
                 System.out.println("Dealer with username " + Username + "was not found");
@@ -78,6 +77,91 @@ public class Dealer extends User{
         }
 
         return dealer;
+    }
+
+    public static String register_Dealer(String username, String password, String name, int account_no, float debt, float commission,float earnings) throws ClassNotFoundException, SQLException {
+
+        String msg = "";
+        Statement stmt = null;
+        Connection con = null;
+
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("INSERT INTO Dealer")
+                    .append("(username, password, name, account_no, debt, commission, earnings) ")
+                    .append("VALUES (?,?,?,?,?,?,?)");
+
+            PreparedStatement preparedStmt = con.prepareStatement(insQuery.toString());
+
+
+            preparedStmt.setString(1, username);
+            preparedStmt.setString(2, password);
+            preparedStmt.setString(3, name);
+            preparedStmt.setInt(4, account_no);
+            preparedStmt.setFloat(5, debt);
+            preparedStmt.setFloat(6, commission);
+            preparedStmt.setFloat(7, earnings);
+
+            preparedStmt.execute();
+
+            msg = "Dealer Registered Succesfully";
+
+        } catch (SQLException ex) {
+            msg = ex.getMessage();
+            // Log exception
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+        }
+        return msg;
+    }
+
+    public static String check_Dealer_username(String username) throws ClassNotFoundException, SQLException {
+
+        Statement stmt = null;
+        Connection con = null;
+
+        String check_username = "";
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT username FROM Dealer ")
+                    .append("WHERE ")
+                    .append("username = ").append("'").append(username).append("'");
+
+            stmt.executeQuery(insQuery.toString());
+
+            ResultSet res = stmt.getResultSet();
+
+            if (res.next() == true) {
+
+                check_username = res.getString("username");
+
+
+            } else {
+                System.out.println("Dealer with user name " + username + "was not found");
+            }
+        } catch (SQLException ex) {
+            // Log exception
+            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+        }
+
+        return check_username;
     }
 
     // functions

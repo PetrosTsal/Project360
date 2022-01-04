@@ -1,14 +1,13 @@
 package backend;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Company extends Customer{
     // attributes
-        // list of authorized personnel
+    // list of authorized personnel
 
     public Company() {
 
@@ -30,7 +29,7 @@ public class Company extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT * FROM companies ")
+            insQuery.append("SELECT * FROM company ")
                     .append("WHERE ")
                     .append("Username = ").append("'").append(Username).append("'").append("AND Password = ").append("'").append(Password).append("'");
 
@@ -62,6 +61,94 @@ public class Company extends Customer{
 
         return company;
     }
+    public static String register_Company(String username, String password, String name, int account_no, float debt, Date expiration_date,float balance , int credit_limit) throws ClassNotFoundException, SQLException {
+
+        String msg = "";
+        Statement stmt = null;
+        Connection con = null;
+
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("INSERT INTO Company")
+                    .append("(username, password, name, account_no, debt, expiration_date, balance, credit_limit) ")
+                    .append("VALUES (?,?,?,?,?,?,?,?)");
+
+            PreparedStatement preparedStmt = con.prepareStatement(insQuery.toString());
+
+
+            preparedStmt.setString(1, username);
+            preparedStmt.setString(2, password);
+            preparedStmt.setString(3, name);
+            preparedStmt.setInt(4, account_no);
+            preparedStmt.setFloat(5, debt);
+            preparedStmt.setDate(6, (java.sql.Date) expiration_date);
+            preparedStmt.setFloat(7, balance);
+            preparedStmt.setInt(8, credit_limit);
+
+            preparedStmt.execute();
+
+            msg = "Company Registered Succesfully";
+
+        } catch (SQLException ex) {
+            msg = ex.getMessage();
+            // Log exception
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+        }
+        return msg;
+    }
+
+    public static String check_Company_username(String username) throws ClassNotFoundException, SQLException {
+
+        Statement stmt = null;
+        Connection con = null;
+
+        String check_username = "";
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT username FROM Company ")
+                    .append("WHERE ")
+                    .append("username = ").append("'").append(username).append("'");
+
+            stmt.executeQuery(insQuery.toString());
+
+            ResultSet res = stmt.getResultSet();
+
+            if (res.next() == true) {
+
+                check_username = res.getString("username");
+
+
+            } else {
+                System.out.println("Company with user name " + username + "was not found");
+            }
+        } catch (SQLException ex) {
+            // Log exception
+            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+        }
+
+        return check_username;
+    }
 
     // functions
 }
+
+
+
