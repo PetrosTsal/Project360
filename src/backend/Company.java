@@ -57,7 +57,7 @@ public class Company extends Customer{
             //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
-            closeDBConnection(stmt, con);
+            DB.closeConnection(stmt, con);
         }
 
         return company;

@@ -74,7 +74,7 @@ public class Dealer extends User{
             //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
-            closeDBConnection(stmt, con);
+            DB.closeConnection(stmt, con);
         }
 
         return dealer;
