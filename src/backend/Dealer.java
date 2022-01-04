@@ -47,7 +47,7 @@ public class Dealer extends User{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT * FROM dealer ")
+            insQuery.append("SELECT * FROM dealers ")
                     .append("WHERE ")
                     .append("Username = ").append("'").append(Username).append("'").append("AND Password = ").append("'").append(Password).append("'");
 
@@ -93,7 +93,7 @@ public class Dealer extends User{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("INSERT INTO Dealer")
+            insQuery.append("INSERT INTO dealers")
                     .append("(username, password, name, account_no, debt, commission, earnings) ")
                     .append("VALUES (?,?,?,?,?,?,?)");
 
@@ -137,7 +137,7 @@ public class Dealer extends User{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT username FROM Dealer ")
+            insQuery.append("SELECT username FROM dealers ")
                     .append("WHERE ")
                     .append("username = ").append("'").append(username).append("'");
 

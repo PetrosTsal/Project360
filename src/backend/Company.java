@@ -29,7 +29,7 @@ public class Company extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT * FROM company ")
+            insQuery.append("SELECT * FROM companies ")
                     .append("WHERE ")
                     .append("Username = ").append("'").append(Username).append("'").append("AND Password = ").append("'").append(Password).append("'");
 
@@ -75,7 +75,7 @@ public class Company extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("INSERT INTO Company")
+            insQuery.append("INSERT INTO companies")
                     .append("(username, password, name, account_no, debt, expiration_date, balance, credit_limit) ")
                     .append("VALUES (?,?,?,?,?,?,?,?)");
 
@@ -120,7 +120,7 @@ public class Company extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT username FROM Company ")
+            insQuery.append("SELECT username FROM companies ")
                     .append("WHERE ")
                     .append("username = ").append("'").append(username).append("'");
 

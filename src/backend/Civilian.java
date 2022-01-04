@@ -75,7 +75,7 @@ public class Civilian extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("INSERT INTO Civilian")
+            insQuery.append("INSERT INTO civilians")
                     .append("(username, password, name, account_no, debt, expiration_date, balance, credit_limit) ")
                     .append("VALUES (?,?,?,?,?,?,?,?)");
 
@@ -120,7 +120,7 @@ public class Civilian extends Customer{
 
             StringBuilder insQuery = new StringBuilder();
 
-            insQuery.append("SELECT username FROM Civilian ")
+            insQuery.append("SELECT username FROM civilians ")
                     .append("WHERE ")
                     .append("username = ").append("'").append(username).append("'");
 
