@@ -11,7 +11,7 @@ public class SQL_Functions {
         Statement statement = null;
 
         try {
-
+            
             connection = DB.getConnection();
             statement = connection.createStatement();
 
