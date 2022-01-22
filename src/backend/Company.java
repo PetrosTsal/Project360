@@ -13,7 +13,7 @@ public class Company extends Customer{
 
     }
 
-    public Company(String username, String password, String name, int account_no, float debt, Date expiration_date, float balance, int credit_limit) {
+    public Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
     }
 
@@ -61,7 +61,7 @@ public class Company extends Customer{
 
         return company;
     }
-    public static String register_Company(String username, String password, String name, int account_no, float debt, Date expiration_date,float balance , int credit_limit) throws ClassNotFoundException, SQLException {
+    public static String register_Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance , int credit_limit) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -87,7 +87,7 @@ public class Company extends Customer{
             preparedStmt.setString(3, name);
             preparedStmt.setInt(4, account_no);
             preparedStmt.setFloat(5, debt);
-            preparedStmt.setDate(6, (java.sql.Date) expiration_date);
+            preparedStmt.setDate(6, expiration_date);
             preparedStmt.setFloat(7, balance);
             preparedStmt.setInt(8, credit_limit);
 

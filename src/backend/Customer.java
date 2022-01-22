@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Customer extends User{
     // attributes
-    private Date expiration_date;
+    private java.sql.Date expiration_date;
     private float balance;
     private int credit_limit;
     // ...
@@ -12,7 +12,7 @@ public class Customer extends User{
 
     }
 
-    public Customer(String username, String password, String name, int account_no, float debt, Date expiration_date, float balance, int credit_limit) {
+    public Customer(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
         super(username, password, name, account_no, debt);
         this.expiration_date = expiration_date;
         this.balance = balance;
@@ -23,7 +23,7 @@ public class Customer extends User{
         return expiration_date;
     }
 
-    public void setExpiration_date(Date expiration_date) {
+    public void setExpiration_date(java.sql.Date expiration_date) {
         this.expiration_date = expiration_date;
     }
 
