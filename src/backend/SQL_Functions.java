@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 public class SQL_Functions {
 
+    static int tran_id = 1;
+
     //leitourgia 3
 
 //    public static void unregister_user(int account_num) {
@@ -61,10 +63,12 @@ public class SQL_Functions {
         Dealer deal = new Dealer();
         deal = Dealer.getDealer2(account_num_d);
         String tipos = cust.getType();
-        float diathesimo ;
-        if (tipos.equals("Civillian")){
-            civ.getCivilian2(account_num_cus);
+        float diathesimo;
+        if (tipos.equals("Civilian")){
+            civ = civ.getCivilian2(account_num_cus);
             diathesimo = civ.getBalance();
+
+            System.out.println(civ.getName() + diathesimo);
             if ( diathesimo >= agora){
                 civ.setBalance(diathesimo-agora);
                 //update me sql ton pinaka civillian me ta nea stoixeia
@@ -72,7 +76,7 @@ public class SQL_Functions {
                 System.out.println("Transaction cannot happen , because of not enough Civillian's balance.");
             }
         }else if ( tipos.equals("Company")){
-            comp.getCompany2(account_num_cus);
+            comp = comp.getCompany2(account_num_cus);
             diathesimo = comp.getBalance() ;
             if ( diathesimo >= agora){
                 comp.setBalance(diathesimo-agora);
@@ -106,19 +110,20 @@ public class SQL_Functions {
             PreparedStatement preparedStmt, preparedStmt2, prepareStmt3;
 
             if(tipos.equals("Civilian")){
-                insQuery.append("UPDATE civilians")
-                        .append("WHERE account_no = ").append("'").append(account_num_cus).append("'")
-                        .append("SET balance = ").append("'").append(civ.getBalance()).append("'");
+                insQuery.append("UPDATE civilians ");
+                insQuery.append(" SET balance = ").append(civ.getBalance());
+                insQuery.append(" WHERE account_no = ").append(account_num_cus);
+
 
             }else if(tipos.equals("Company")){
-                insQuery.append("UPDATE companies")
-                        .append("WHERE account_no = ").append("'").append(account_num_cus).append("'")
-                        .append("SET balance = ").append("'").append(comp.getBalance()).append("'");
+                insQuery.append("UPDATE companies ");
+                insQuery.append(" SET balance = ").append(comp.getBalance());
+                insQuery.append(" WHERE account_no = ").append(account_num_cus);
             }
 
-            insQuery2.append("UPDATE dealers")
-                    .append("WHERE account_no = ").append("'").append(account_num_d).append("'")
-                    .append("SET earnings = ").append("'").append(deal.getEarnings()).append("'");
+            insQuery2.append("UPDATE dealers ");
+            insQuery2.append(" SET earnings = ").append(deal.getEarnings());
+            insQuery2.append(" WHERE account_no = ").append(account_num_d);
 
 
 
@@ -141,7 +146,7 @@ public class SQL_Functions {
         }
 
         java.sql.Date dat = new Date(2022);
-        Transaction.insert_Transaction(1, deal.getName(), deal.getAccount_no(), cust.getName(), cust.getAccount_no(), dat, agora, "charge/credit");
+        Transaction.insert_Transaction(++tran_id, deal.getName(), deal.getAccount_no(), cust.getName(), cust.getAccount_no(), dat, agora, "charge/credit");
 
         return ;
     }

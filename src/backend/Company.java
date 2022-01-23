@@ -10,11 +10,17 @@ public class Company extends Customer{
     // list of authorized personnel
 
     public Company() {
-
+        setType("Company");
     }
 
     public Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
+        setType("Company");
+    }
+
+    @Override
+    public void setType(String type) {
+        super.setType(type);
     }
 
     public static Company getCompany(String username , String password) throws ClassNotFoundException, SQLException {
@@ -137,6 +143,8 @@ public class Company extends Customer{
             preparedStmt.setInt(8, credit_limit);
 
             preparedStmt.execute();
+
+            User.register_User(username, password, name, account_no, debt, "Company");
 
             msg = "Company Registered Succesfully";
 

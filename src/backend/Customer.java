@@ -17,7 +17,10 @@ public class Customer extends User{
         this.expiration_date = expiration_date;
         this.balance = balance;
         this.credit_limit = credit_limit;
+        setType("Customer");
     }
+    
+
 
     public Date getExpiration_date() {
         return expiration_date;

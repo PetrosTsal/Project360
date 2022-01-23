@@ -1,9 +1,8 @@
 package backend;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class User {
     // attributes
@@ -14,16 +13,17 @@ public class User {
     private float debt;
     private String type ;
     // ...
-    public  User(){
 
+    public  User(){
+        this.type = "User";
     }
-    public User(String username , String password ,String name, int account_no, float debt , String type) {
+
+    public User(String username , String password ,String name, int account_no, float debt) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.account_no = account_no;
         this.debt = debt;
-        this.type = type ;
     }
 
     public String getType() {
@@ -74,7 +74,7 @@ public class User {
         this.debt = debt;
     }
 
-    public static User getUser2(String username , String password) throws ClassNotFoundException , SQLException {
+    public static User getUser(String username , String password) throws ClassNotFoundException , SQLException {
         User user = null ;
         Statement stmnt = null;
         Connection con = null;
@@ -160,10 +160,12 @@ public class User {
         return user;
     }
 
-    /*public static String getType(int account_num) throws ClassNotFoundException , SQLException{
-        String tipos = null ;
+    public static String register_User(String username, String password, String name, int account_no, float debt, String type) throws ClassNotFoundException, SQLException {
+
+        String msg = "";
         Statement stmt = null;
         Connection con = null;
+
         try {
 
             con = DB.getConnection();
@@ -172,27 +174,33 @@ public class User {
 
             StringBuilder insQuery = new StringBuilder();
 
-             insQuery.append( "SELECT type FROM users ").append("WHERE ")
-                     .append("account_no = ").append("'").append(account_num).append("'");
+            insQuery.append("INSERT INTO users")
+                    .append("(username, password, name, account_no, debt, type) ")
+                    .append("VALUES (?,?,?,?,?,?)");
 
-            stmt.executeQuery(insQuery.toString());
+            PreparedStatement preparedStmt = con.prepareStatement(insQuery.toString());
 
-            ResultSet res = stmt.getResultSet();
 
-            if (res.next()) {
-                tipos = res.getString("type");
 
-            } else {
-                System.out.println("User with account_no " + account_num + "was not found");
-            }
+            preparedStmt.setString(1, username);
+            preparedStmt.setString(2, password);
+            preparedStmt.setString(3, name);
+            preparedStmt.setInt(4, account_no);
+            preparedStmt.setFloat(5, debt);
+            preparedStmt.setString(6, type);
+
+            preparedStmt.execute();
+
+            msg = "User Registered Succesfully";
+
         } catch (SQLException ex) {
+            msg = ex.getMessage();
             // Log exception
-            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
             DB.closeConnection(stmt, con);
         }
-        return tipos;
-    }*/
-// functions
+        return msg;
+    }
 }

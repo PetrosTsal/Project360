@@ -183,5 +183,4 @@ public class view {
             start = myObj.nextLine();
         }
     }
-
 }

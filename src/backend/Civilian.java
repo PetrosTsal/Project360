@@ -9,11 +9,17 @@ public class Civilian extends Customer{
 
 
     public Civilian() {
-
+        setType("Civilian");
     }
 
     public Civilian(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
+        setType("Civilian");
+    }
+
+    @Override
+    public void setType(String type) {
+        super.setType(type);
     }
 
     public static Civilian getCivilian(String username , String password) throws ClassNotFoundException, SQLException {
@@ -62,7 +68,7 @@ public class Civilian extends Customer{
     }
 
     public static Civilian getCivilian2(int account_num) throws ClassNotFoundException, SQLException {
-        Civilian civilian = null;
+        Civilian civilian = new Civilian();
         Statement stmt = null;
         Connection con = null;
         try {
@@ -82,7 +88,6 @@ public class Civilian extends Customer{
             ResultSet res = stmt.getResultSet();
 
             if (res.next() == true) {
-                civilian = new Civilian();
                 civilian.setUsername(res.getString("username"));
                 civilian.setPassword(res.getString("password"));
                 civilian.setName(res.getString("name"));
@@ -105,6 +110,7 @@ public class Civilian extends Customer{
 
         return civilian;
     }
+
     public static String register_Civilian(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance , int credit_limit) throws ClassNotFoundException, SQLException {
 
         String msg = "";
@@ -136,6 +142,8 @@ public class Civilian extends Customer{
             preparedStmt.setInt(8, credit_limit);
 
             preparedStmt.execute();
+
+            User.register_User(username, password, name, account_no, debt, "Civilian");
 
             msg = "Civilian Registered Succesfully";
 

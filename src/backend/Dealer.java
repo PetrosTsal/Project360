@@ -26,14 +26,25 @@ public class Dealer extends User{
     }
 
     public Dealer(){
-
+        setType("Dealer");
     }
 
-    public Dealer(String username, String password, String name, int account_no, float debt, float commission, float earnings,String type ) {
-        super(username, password, name, account_no, debt , type);
+    public Dealer(String username, String password, String name, int account_no, float debt, float commission, float earnings) {
+        super(username, password, name, account_no, debt);
         this.commission = commission;
         this.earnings = earnings;
+        setType("Dealer");
     }
+
+    @Override
+    public void setType(String type) {
+        super.setType(type);
+    }
+
+    public String getType() {
+        return "Dealer";
+    }
+
     public static Dealer getDealer(String username , String password) throws ClassNotFoundException, SQLException {
         Dealer dealer = null;
         Statement stmt = null;
@@ -93,7 +104,7 @@ public class Dealer extends User{
 
             insQuery.append("SELECT * FROM dealers ")
                     .append("WHERE ")
-                    .append("Username = ").append("'").append(account_num).append("'");
+                    .append("account_no = ").append("'").append(account_num).append("'");
 
             stmt.executeQuery(insQuery.toString());
 
@@ -153,6 +164,8 @@ public class Dealer extends User{
             preparedStmt.setFloat(7, earnings);
 
             preparedStmt.execute();
+
+            User.register_User(username, password, name, account_no, debt, "Dealer");
 
             msg = "Dealer Registered Succesfully";
 
