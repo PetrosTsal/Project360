@@ -1,65 +1,68 @@
 package backend;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQL_Functions {
 
-    public static void unregister_user(int account_num) {
-        Connection connection = null;
-        Statement statement = null;
-
-        try {
-            
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-
-            if(Dealer.getDealer2(account_num) != null) {
-                float debt = Dealer.getDealer2(account_num).getDebt();
-                if(debt == 0) {
-                    ResultSet resultSet = statement.executeQuery("delete from");
-                }
-                else {
-                    System.out.println("The debt is not equal to zero.");
-                }
-            }
-            else if(Civilian.getCivilian2(account_num) != null) {
-                float debt = Civilian.getCivilian2(account_num).getDebt();
-                if(debt == 0) {
-                    ResultSet resultSet = statement.executeQuery("delete from");
-                }
-                else {
-                    System.out.println("The debt is not equal to zero.");
-                }
-            }
-            else if(Company.getCompany2(account_num) != null) {
-                float debt = Company.getCompany2(account_num).getDebt();
-                if(debt == 0) {
-                    ResultSet resultSet = statement.executeQuery("delete from");
-                }
-                else {
-                    System.out.println("The debt is not equal to zero");
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            DB.closeConnection(statement, connection);
-        }
-    }
-
     //leitourgia 3
-    public static void purchase(int account_num_d , int account_num_cus , int agora) throws SQLException, ClassNotFoundException {
+
+//    public static void unregister_user(int account_num) {
+//        Connection connection = null;
+//        Statement statement = null;
+//
+//        try {
+//
+//            connection = DB.getConnection();
+//            statement = connection.createStatement();
+//
+//            if(Dealer.getDealer2(account_num) != null) {
+//                float debt = Dealer.getDealer2(account_num).getDebt();
+//                if(debt == 0) {
+//                    ResultSet resultSet = statement.executeQuery("delete from");
+//                }
+//                else {
+//                    System.out.println("The debt is not equal to zero.");
+//                }
+//            }
+//            else if(Civilian.getCivilian2(account_num) != null) {
+//                float debt = Civilian.getCivilian2(account_num).getDebt();
+//                if(debt == 0) {
+//                    ResultSet resultSet = statement.executeQuery("delete from");
+//                }
+//                else {
+//                    System.out.println("The debt is not equal to zero.");
+//                }
+//            }
+//            else if(Company.getCompany2(account_num) != null) {
+//                float debt = Company.getCompany2(account_num).getDebt();
+//                if(debt == 0) {
+//                    ResultSet resultSet = statement.executeQuery("delete from");
+//                }
+//                else {
+//                    System.out.println("The debt is not equal to zero");
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finally {
+//            DB.closeConnection(statement, connection);
+//        }
+//    }
+    public static void purchase(int account_num_d , int account_num_cus , float agora) throws SQLException, ClassNotFoundException {
+        Civilian civ = new Civilian();
+        Company comp = new Company();
         User cust = new User() ;
         cust = User.getUser2(account_num_cus);
+        Dealer deal = new Dealer();
+        deal = Dealer.getDealer2(account_num_d);
         String tipos = cust.getType();
         float diathesimo ;
         if (tipos.equals("Civillian")){
-            Civilian civ = new Civilian() ;
             civ.getCivilian2(account_num_cus);
             diathesimo = civ.getBalance();
             if ( diathesimo >= agora){
@@ -69,7 +72,6 @@ public class SQL_Functions {
                 System.out.println("Transaction cannot happen , because of not enough Civillian's balance.");
             }
         }else if ( tipos.equals("Company")){
-            Company comp = new Company() ;
             comp.getCompany2(account_num_cus);
             diathesimo = comp.getBalance() ;
             if ( diathesimo >= agora){
@@ -79,7 +81,68 @@ public class SQL_Functions {
                 System.out.println("Transaction cannot happen , because of not enough Company's balance.");
             }
         }
-        //eisagwgh transaction me sinartisi pou tha kanei insert transactions h apo edw me query ??
+
+        float updated_earnings = deal.getEarnings() + agora;
+        deal.setEarnings(updated_earnings);
+
+        String msg = "";
+        Statement stmt = null;
+        Statement stmt2 = null;
+        Statement stmt3 = null;
+        Connection con = null;
+
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+            stmt2 = con.createStatement();
+            stmt3 = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+            StringBuilder insQuery2 = new StringBuilder();
+            StringBuilder insQuery3 = new StringBuilder();
+
+            PreparedStatement preparedStmt, preparedStmt2, prepareStmt3;
+
+            if(tipos.equals("Civilian")){
+                insQuery.append("UPDATE civilians")
+                        .append("WHERE account_no = ").append("'").append(account_num_cus).append("'")
+                        .append("SET balance = ").append("'").append(civ.getBalance()).append("'");
+
+            }else if(tipos.equals("Company")){
+                insQuery.append("UPDATE companies")
+                        .append("WHERE account_no = ").append("'").append(account_num_cus).append("'")
+                        .append("SET balance = ").append("'").append(comp.getBalance()).append("'");
+            }
+
+            insQuery2.append("UPDATE dealers")
+                    .append("WHERE account_no = ").append("'").append(account_num_d).append("'")
+                    .append("SET earnings = ").append("'").append(deal.getEarnings()).append("'");
+
+
+
+            preparedStmt = con.prepareStatement(insQuery.toString());
+            preparedStmt.execute();
+
+            preparedStmt2 = con.prepareStatement(insQuery2.toString());
+            preparedStmt2.execute();
+
+            msg = "Balance updated Succesfully";
+
+        } catch (SQLException ex) {
+            msg = ex.getMessage();
+            // Log exception
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+            DB.closeConnection(stmt2, con);
+        }
+
+        java.sql.Date dat = new Date(2022);
+        Transaction.insert_Transaction(1, deal.getName(), deal.getAccount_no(), cust.getName(), cust.getAccount_no(), dat, agora, "charge/credit");
+
         return ;
     }
 }

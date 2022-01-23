@@ -143,12 +143,16 @@ public class view {
         return ;
     }
 
+    public static void makeTransaction(int dealer_account_no, int customer_account_no, float amount) throws SQLException, ClassNotFoundException {
+
+    }
+
     public static void initial_menu() throws SQLException, ClassNotFoundException {
         int choice = 0 ;
         String register ;
         Scanner myObj = new Scanner(System.in);
         while(choice == 0) {
-            System.out.println("If you want to login to our CCC type login .If you are a new memeber type register.");
+            System.out.println("If you want to login to our CCC type login .If you are a new member type register.");
             register = myObj.nextLine();
             if (register.equals("login")) {
                 user_login();
