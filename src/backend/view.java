@@ -1,7 +1,8 @@
 package backend;
+import java.sql.DatabaseMetaData;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.*;
-
 
 public class view {
 
@@ -68,7 +69,7 @@ public class view {
         String usernam , passwor , nam;
         int account_n , credit_limi ;
         float deb , balanc , commissio , earning;
-        Date expiration_dat = new Date();
+        Date expiration_dat = new Date(Calendar.DATE);
         Scanner myObj = new Scanner(System.in);
         System.out.println("Choose the category you want to register as .");
         register  = myObj.nextLine();
@@ -86,7 +87,7 @@ public class view {
                 System.out.println("Give me your debt please");
                 deb = myObj.nextFloat();
                 System.out.println("Give me your card's expiration date please");
-                //expiration_dat =(Date) myObj.nextLine();
+                //expiration_dat = myObj.nextLine();
                 System.out.println("Give me your balance please");
                 balanc = myObj.nextFloat() ;
                 System.out.println("Give me your card's credit limit please");

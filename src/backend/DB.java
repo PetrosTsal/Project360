@@ -9,8 +9,8 @@ public class DB {
 
     private static final String url = "jdbc:mysql://localhost";
     private static final int port = 3306;
-    private static final String username = "nikos";
-    private static final String password = "nikos1";
+    private static final String username = "root";
+    private static final String password = "0262";
     private static final String dbName = "cs360DB";
 
     public static Connection getConnection() throws SQLException {
