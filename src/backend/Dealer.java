@@ -29,13 +29,12 @@ public class Dealer extends User{
 
     }
 
-    public Dealer(String username, String password, String name, int account_no, float debt, float commission, float earnings) {
-        super(username, password, name, account_no, debt);
+    public Dealer(String username, String password, String name, int account_no, float debt, float commission, float earnings,String type ) {
+        super(username, password, name, account_no, debt , type);
         this.commission = commission;
         this.earnings = earnings;
     }
-
-    public static Dealer getDealer(String Username, String Password) throws ClassNotFoundException, SQLException {
+    public static Dealer getDealer(String username , String password) throws ClassNotFoundException, SQLException {
         Dealer dealer = null;
         Statement stmt = null;
         Connection con = null;
@@ -49,7 +48,8 @@ public class Dealer extends User{
 
             insQuery.append("SELECT * FROM dealers ")
                     .append("WHERE ")
-                    .append("Username = ").append("'").append(Username).append("'").append("AND Password = ").append("'").append(Password).append("'");
+                    .append(" username = ").append("'").append(username).append("AND password = ").append("'").append(password).append("'");
+
 
             stmt.executeQuery(insQuery.toString());
 
@@ -66,7 +66,51 @@ public class Dealer extends User{
                 dealer.setEarnings(res.getFloat("earnings"));
 
             } else {
-                System.out.println("Dealer with username " + Username + "was not found");
+                System.out.println("Dealer with username " + username + "was not found");
+            }
+        } catch (SQLException ex) {
+            // Log exception
+            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            // close connection
+            DB.closeConnection(stmt, con);
+        }
+
+        return dealer;
+    }
+
+    public static Dealer getDealer2(int account_num) throws ClassNotFoundException, SQLException {
+        Dealer dealer = null;
+        Statement stmt = null;
+        Connection con = null;
+        try {
+
+            con = DB.getConnection();
+
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT * FROM dealers ")
+                    .append("WHERE ")
+                    .append("Username = ").append("'").append(account_num).append("'");
+
+            stmt.executeQuery(insQuery.toString());
+
+            ResultSet res = stmt.getResultSet();
+
+            if (res.next() == true) {
+                dealer = new Dealer();
+                dealer.setUsername(res.getString("username"));
+                dealer.setPassword(res.getString("password"));
+                dealer.setName(res.getString("name"));
+                dealer.setAccount_no(res.getInt("account_no"));
+                dealer.setDebt(res.getFloat("debt"));
+                dealer.setCommission(res.getFloat("commission"));
+                dealer.setEarnings(res.getFloat("earnings"));
+
+            } else {
+                System.out.println("Dealer with account_no " + account_num + "was not found");
             }
         } catch (SQLException ex) {
             // Log exception
