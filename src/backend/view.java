@@ -160,7 +160,14 @@ public class view {
             } else if (register.equals("register")) {
                 user_register();
                 choice = 1;
-            } else {
+            } else if (register.equals("purchase")) {
+                int dealer_accountNo = myObj.nextInt();
+                int customer_accountNo = myObj.nextInt();
+                float amount = myObj.nextFloat();
+
+                SQL_Functions.purchase(dealer_accountNo, customer_accountNo, amount);
+            }
+            else {
                 System.out.println("Invalid input , please try again");
             }
         }
