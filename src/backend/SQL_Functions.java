@@ -1,8 +1,8 @@
 package backend;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -154,11 +154,12 @@ public class SQL_Functions {
         System.out.println("Transaction's customer : "+tra.getCustomerName() +"and dealer's name:"+tra.getDealerName());
         if ( tra != null ){
             User us = new User();
-            Dealer deal = new Dealer() ;
+            Dealer deal = new Dealer()  ;
             String tipos ;
+            int epiloges_dealer = 0 ;
             int c_acc = tra.getCustomerAccount_no() , d_acc = tra.getDealerAccount_no() ;
             double epistrofi = tra.getAmount() ;
-            double balance_now = 0 , earnings_now = 0 ;
+            double balance_now = 0 , earnings_now = 0  , debt_now = 0 , upoloipa = 0;
             us = User.getUser2(c_acc);
             deal = Dealer.getDealer2(d_acc);
             tipos = us.getType();
@@ -166,16 +167,23 @@ public class SQL_Functions {
                 Civilian civ = new Civilian();
                 civ = Civilian.getCivilian2(c_acc);
                 balance_now = civ.getBalance();
-                civ.setBalance((float) (balance_now+epistrofi));//mallon tha xreiastei to amount tou transaction na ginei float
+                civ.setBalance(balance_now+epistrofi);//mallon tha xreiastei to amount tou transaction na ginei float
             }else if ( tipos.equals("Company")){
                 Company comp = new Company();
                 comp = Company.getCompany2(c_acc);
                 balance_now = comp.getBalance();
-                comp.setBalance((float) (balance_now+epistrofi));//mallon tha xreiastei to amount tou transaction na ginei float
+                comp.setBalance(balance_now+epistrofi);//mallon tha xreiastei to amount tou transaction na ginei float
             }
             earnings_now = deal.getEarnings();
-            deal.setEarnings((float) (earnings_now-epistrofi));
-
+            if ( earnings_now <= epistrofi ){
+                debt_now = deal.getDebt() ;
+                upoloipa = epistrofi - earnings_now ;
+                epiloges_dealer = 1 ;
+                deal.setEarnings(0);
+                deal.setDebt((debt_now+upoloipa));
+            }else {
+                deal.setEarnings(earnings_now-epistrofi);
+            }
 
             Statement stmt2 = null , stmt3 = null , stmt4 = null;
             Connection con2 = null;
@@ -195,10 +203,17 @@ public class SQL_Functions {
                     insQuery2.append(" SET balance = ").append((balance_now+epistrofi));
                     insQuery2.append(" WHERE account_no = ").append(c_acc);
                 }
+                if ( epiloges_dealer == 0 ){
+                    insQuery3.append("UPDATE dealers ");
+                    insQuery3.append(" SET earnings = ").append((earnings_now-epistrofi));
+                    insQuery3.append(" WHERE account_no = ").append(d_acc);
+                } else if ( epiloges_dealer == 1 ){
+                    insQuery3.append("UPDATE dealers ");
+                    insQuery3.append(" SET earnings = ").append(0).append(", ");
+                    insQuery3.append(" debt = ").append((debt_now+upoloipa));
+                    insQuery3.append(" WHERE account_no = ").append(d_acc);
+                }
 
-                insQuery3.append("UPDATE dealers ");
-                insQuery3.append(" SET earnings = ").append((earnings_now-epistrofi));
-                insQuery3.append(" WHERE account_no = ").append(d_acc);
 
                 insQuery4.append("DELETE FROM transactions ");
                 insQuery4.append(" WHERE transactionID = ").append(transs_id);
@@ -216,8 +231,6 @@ public class SQL_Functions {
             }
 
         }
-
-
     }
 
     //leitourgia 5
@@ -589,6 +602,70 @@ public class SQL_Functions {
             DB.closeConnection(statement, connection);
         }
 
+        return;
+    }
+
+    public static void  other_questions2(int choice ) throws SQLException, ClassNotFoundException {
+        Scanner other = new Scanner(System.in);
+        int otherinpt;
+        List<Transaction> traList = new ArrayList<>();
+        Statement stmt = null;
+        Statement stmt2 = null;
+        Connection con = null;
+
+        try {
+
+            con = DB.getConnection();
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+            if (choice == 2) {
+                System.out.println("All transactions' infos :");
+                insQuery.append("SELECT * FROM transactions");
+                stmt.executeQuery(insQuery.toString());
+            }else if (choice == 3) {
+                System.out.println("Give me the user's account_no , whom you looking for his transactions");
+                otherinpt = other.nextInt();
+                User us = new User();
+                us = User.getUser2(otherinpt);
+                String tipos = us.getType();
+                if ( tipos.equals("Dealer")) {
+                    insQuery.append("SELECT * FROM transactions")
+                            .append(" WHERE")
+                            .append(" dealerAccount_no = ").append(otherinpt);
+                    stmt.executeQuery(insQuery.toString());
+                }else {
+                    insQuery.append("SELECT * FROM transactions")
+                            .append(" WHERE")
+                            .append(" customerAccount_no = ").append(otherinpt);
+
+                    stmt.executeQuery(insQuery.toString());
+                }
+
+
+            }
+            ResultSet res = stmt.getResultSet();
+
+            while (res.next() == true) {
+                Transaction insert_tra = new Transaction();
+                insert_tra.setTransactionID(res.getInt("transactionID"));
+                insert_tra.setAmount(res.getFloat("amount"));
+                insert_tra.setDate(res.getDate("date"));
+                insert_tra.setCustomerAccount_no(res.getInt("customerAccount_no"));
+                insert_tra.setCustomerName(res.getString("customerName"));
+                insert_tra.setDealerAccount_no(res.getInt("dealerAccount_no"));
+                insert_tra.setDealerName(res.getString("dealerName"));
+                traList.add(insert_tra);
+            }
+            for (int i = 0; i < traList.size(); i++) {
+                System.out.println("Transaction with id :" + traList.get(i).getTransactionID() + " , amount :" + traList.get(i).getAmount()
+                        + ", date :" + traList.get(i).getDate() + ", customer's account_no :" + traList.get(i).getCustomerAccount_no() + "customer's name :" + traList.get(i).getCustomerName()
+                        + ", dealer's account_no :" + traList.get(i).getDealerAccount_no() + ", dealer's name : " + traList.get(i).getDealerName());
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
         return;
     }
 }
