@@ -2,6 +2,8 @@ package backend;
 
 import java.sql.*;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -452,5 +454,142 @@ public class SQL_Functions {
         } finally {
             DB.closeConnection(stmt, con);
         }
+    }
+
+    public static void getGoldUsers(){
+
+        Connection connection = null;
+        Statement statement = null;
+
+        Map<Integer, String> goldMap = new HashMap<Integer, String>();
+
+        try {
+
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+
+            User user;
+
+            StringBuilder insQueryCiv = new StringBuilder();
+            StringBuilder insQueryCom = new StringBuilder();
+            StringBuilder insQueryDeal = new StringBuilder();
+
+            insQueryCiv.append("SELECT * FROM civilians ")
+                    .append("WHERE ")
+                    .append("debt = 0");
+
+            insQueryCom.append("SELECT * FROM companies ")
+                    .append("WHERE ")
+                    .append("debt = 0");
+
+            insQueryDeal.append("SELECT * FROM dealers ")
+                    .append("WHERE ")
+                    .append("debt = 0");
+
+            statement.executeQuery(insQueryCiv.toString());
+
+            ResultSet resCiv = statement.getResultSet();
+
+            while(resCiv.next()){
+                System.out.println(resCiv.getString("name"));
+                goldMap.put(resCiv.getInt("account_no") ,resCiv.getString("name"));
+            }
+
+            statement.executeQuery(insQueryCom.toString());
+
+            ResultSet resCom = statement.getResultSet();
+
+            while(resCom.next()){
+                goldMap.put(resCom.getInt("account_no") ,resCom.getString("name"));
+            }
+
+            statement.executeQuery(insQueryDeal.toString());
+
+            ResultSet resDeal = statement.getResultSet();
+
+            while(resDeal.next()){
+                goldMap.put(resDeal.getInt("account_no") ,resDeal.getString("name"));
+            }
+
+            for (Map.Entry<Integer, String> entry : goldMap.entrySet()) {
+                System.out.println(entry.getKey() + " | " + entry.getValue());
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            DB.closeConnection(statement, connection);
+        }
+
+        return;
+    }
+
+
+    public static void getStandardUsers(){
+
+        Connection connection = null;
+        Statement statement = null;
+
+        Map<Integer, String> goldMap = new HashMap<Integer, String>();
+
+        try {
+
+            connection = DB.getConnection();
+            statement = connection.createStatement();
+
+            User user;
+
+            StringBuilder insQueryCiv = new StringBuilder();
+            StringBuilder insQueryCom = new StringBuilder();
+            StringBuilder insQueryDeal = new StringBuilder();
+
+            insQueryCiv.append("SELECT * FROM civilians ")
+                    .append("WHERE ")
+                    .append("debt > 0");
+
+            insQueryCom.append("SELECT * FROM companies ")
+                    .append("WHERE ")
+                    .append("debt > 0");
+
+            insQueryDeal.append("SELECT * FROM dealers ")
+                    .append("WHERE ")
+                    .append("debt > 0");
+
+            statement.executeQuery(insQueryCiv.toString());
+
+            ResultSet resCiv = statement.getResultSet();
+
+            while(resCiv.next()){
+                System.out.println(resCiv.getString("name"));
+                goldMap.put(resCiv.getInt("account_no") ,resCiv.getString("name"));
+            }
+
+            statement.executeQuery(insQueryCom.toString());
+
+            ResultSet resCom = statement.getResultSet();
+
+            while(resCom.next()){
+                goldMap.put(resCom.getInt("account_no") ,resCom.getString("name"));
+            }
+
+            statement.executeQuery(insQueryDeal.toString());
+
+            ResultSet resDeal = statement.getResultSet();
+
+            while(resDeal.next()){
+                goldMap.put(resDeal.getInt("account_no") ,resDeal.getString("name"));
+            }
+
+            for (Map.Entry<Integer, String> entry : goldMap.entrySet()) {
+                System.out.println(entry.getKey() + " | " + entry.getValue());
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            DB.closeConnection(statement, connection);
+        }
+
+        return;
     }
 }
