@@ -160,14 +160,34 @@ public class view {
             } else if (register.equals("register")) {
                 user_register();
                 choice = 1;
+            } else if (register.equals("unregister")){
+                Scanner scan = new Scanner(System.in);
+                int account_no = scan.nextInt();
+
+                SQL_Functions.unregister_User(account_no);
             } else if (register.equals("purchase")) {
                 int dealer_accountNo = myObj.nextInt();
                 int customer_accountNo = myObj.nextInt();
                 float amount = myObj.nextFloat();
 
                 SQL_Functions.purchase(dealer_accountNo, customer_accountNo, amount);
-            }
-            else {
+            } else if(register.equals("DOM")){
+                SQL_Functions.dealer_of_the_month();
+            } else if(register.equals("pay")){
+                Scanner scan = new Scanner(System.in);
+                int account_no = scan.nextInt();
+
+                SQL_Functions.pay_debt(account_no);
+            } else if(register.equals("return")){
+                Scanner scan = new Scanner(System.in);
+                int transId = scan.nextInt();
+
+                SQL_Functions.return_things(transId);
+            } else if(register.equals("gold")){
+                SQL_Functions.getGoldUsers();
+            } else if(register.equals("standard")){
+                SQL_Functions.getStandardUsers();
+            } else {
                 System.out.println("Invalid input , please try again");
             }
         }

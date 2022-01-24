@@ -1,7 +1,6 @@
 package backend;
 
 import java.sql.*;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -12,7 +11,7 @@ public class SQL_Functions {
     static int tran_id = 1;
 
 
-    public static void purchase(int account_num_d , int account_num_cus , float agora) throws SQLException, ClassNotFoundException {
+    public static void purchase(int account_num_d , int account_num_cus , double agora) throws SQLException, ClassNotFoundException {
         Civilian civ = new Civilian();
         Company comp = new Company();
         User cust = new User() ;
@@ -20,7 +19,7 @@ public class SQL_Functions {
         Dealer deal = new Dealer();
         deal = Dealer.getDealer2(account_num_d);
         String tipos = cust.getType();
-        float diathesimo;
+        double diathesimo;
         if (tipos.equals("Civilian")){
             civ = civ.getCivilian2(account_num_cus);
             diathesimo = civ.getBalance();
@@ -43,7 +42,7 @@ public class SQL_Functions {
             }
         }
 
-        float updated_earnings = deal.getEarnings() + agora;
+        double updated_earnings = deal.getEarnings() + agora;
         deal.setEarnings(updated_earnings);
 
         String msg = "";
@@ -125,7 +124,7 @@ public class SQL_Functions {
 
             insQuery.append("SELECT * FROM transactions ")
                     .append("WHERE ")
-                    .append(" transaction_id = ").append(transs_id);
+                    .append(" transactionID = ").append(transs_id);
 
 
             stmt.executeQuery(insQuery.toString());
@@ -133,13 +132,13 @@ public class SQL_Functions {
             ResultSet res = stmt.getResultSet();
             //-----------------------den eixa database kai den kserw onomata sthlwn
             if (res.next() == true) {
-                tra.setTransactionID(res.getInt("transaction_id"));
-                tra.setDealerName(res.getString("dealer_name"));
-                tra.setDealerAccount_no(res.getInt("dealer_account_no"));
-                tra.setCustomerName(res.getString("cus_account_name"));
-                tra.setCustomerAccount_no(res.getInt("cus_account_no"));
+                tra.setTransactionID(res.getInt("transactionID"));
+                tra.setDealerName(res.getString("dealerName"));
+                tra.setDealerAccount_no(res.getInt("dealerAccount_no"));
+                tra.setCustomerName(res.getString("customerName"));
+                tra.setCustomerAccount_no(res.getInt("customerAccount_no"));
                 tra.setDate(res.getDate("date"));
-                tra.setAmount(res.getFloat("amount"));
+                tra.setAmount(res.getDouble("amount"));
 
             } else {
                 tra = null;
@@ -152,14 +151,14 @@ public class SQL_Functions {
             // close connection
             DB.closeConnection(stmt, con);
         }
-
+        System.out.println("Transaction's customer : "+tra.getCustomerName() +"and dealer's name:"+tra.getDealerName());
         if ( tra != null ){
             User us = new User();
             Dealer deal = new Dealer() ;
             String tipos ;
             int c_acc = tra.getCustomerAccount_no() , d_acc = tra.getDealerAccount_no() ;
             double epistrofi = tra.getAmount() ;
-            float balance_now = 0 , earnings_now = 0 ;
+            double balance_now = 0 , earnings_now = 0 ;
             us = User.getUser2(c_acc);
             deal = Dealer.getDealer2(d_acc);
             tipos = us.getType();
@@ -202,7 +201,7 @@ public class SQL_Functions {
                 insQuery3.append(" WHERE account_no = ").append(d_acc);
 
                 insQuery4.append("DELETE FROM transactions ");
-                insQuery4.append(" WHERE transaction_id = ").append(transs_id);
+                insQuery4.append(" WHERE transactionID = ").append(transs_id);
 
                 preparedStmt2 = con2.prepareStatement(insQuery2.toString());
                 preparedStmt2.execute();
@@ -413,10 +412,11 @@ public class SQL_Functions {
 
             PreparedStatement pstmt = null;
 
-            insQuery.append("SELECT TOP 1 dealerAccount_no");
+            insQuery.append("SELECT dealerAccount_no");
             insQuery.append(" FROM transactions");
             insQuery.append(" GROUP BY dealerAccount_no");
-            insQuery.append(" ORDER BY Count(dealerAccount_no) DESC");
+            insQuery.append(" ORDER BY COUNT(dealerAccount_no) DESC");
+            insQuery.append(" LIMIT 1");
 
             stmt.executeQuery(insQuery.toString());
             ResultSet res = stmt.getResultSet();
@@ -426,13 +426,13 @@ public class SQL_Functions {
 
                 insQuery2.append("SELECT debt");
                 insQuery2.append(" FROM dealers");
-                insQuery2.append(" WHERE dealerAccount_no = ").append(bestDealer_accountNo);
+                insQuery2.append(" WHERE account_no = ").append(bestDealer_accountNo);
 
                 stmt2.executeQuery(insQuery2.toString());
                 ResultSet res2 = stmt2.getResultSet();
 
                 if(res2.next()) {
-                    double new_debt = res.getDouble("debt");
+                    double new_debt = res2.getDouble("debt");
                     if(new_debt != 0) {
                         new_debt = new_debt - (new_debt*0.05);
 
@@ -491,7 +491,6 @@ public class SQL_Functions {
             ResultSet resCiv = statement.getResultSet();
 
             while(resCiv.next()){
-                System.out.println(resCiv.getString("name"));
                 goldMap.put(resCiv.getInt("account_no") ,resCiv.getString("name"));
             }
 

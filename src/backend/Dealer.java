@@ -6,22 +6,22 @@ import java.util.logging.Logger;
 
 public class Dealer extends User{
     // attributes
-    private float commission;
-    private float earnings;
+    private double commission;
+    private double earnings;
 
-    public float getCommission() {
+    public double getCommission() {
         return commission;
     }
 
-    public void setCommission(float commission) {
+    public void setCommission(double commission) {
         this.commission = commission;
     }
 
-    public float getEarnings() {
+    public double getEarnings() {
         return earnings;
     }
 
-    public void setEarnings(float earnings) {
+    public void setEarnings(double earnings) {
         this.earnings = earnings;
     }
 
@@ -29,7 +29,7 @@ public class Dealer extends User{
         setType("Dealer");
     }
 
-    public Dealer(String username, String password, String name, int account_no, float debt, float commission, float earnings) {
+    public Dealer(String username, String password, String name, int account_no, double debt, double commission, double earnings) {
         super(username, password, name, account_no, debt);
         this.commission = commission;
         this.earnings = earnings;

@@ -10,7 +10,7 @@ public class User {
     private String password;
     private String name;
     private int account_no; // primary key
-    private float debt;
+    private double debt;
     private String type ;
     // ...
 
@@ -18,7 +18,7 @@ public class User {
         this.type = "User";
     }
 
-    public User(String username , String password ,String name, int account_no, float debt) {
+    public User(String username , String password ,String name, int account_no, double debt) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -66,11 +66,11 @@ public class User {
         this.account_no = account_no;
     }
 
-    public float getDebt() {
+    public double getDebt() {
         return debt;
     }
 
-    public void setDebt(float debt) {
+    public void setDebt(double debt) {
         this.debt = debt;
     }
 

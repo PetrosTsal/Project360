@@ -1,7 +1,6 @@
 package backend;
 
 import java.sql.*;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +49,7 @@ public class Company extends Customer{
                 company.setName(res.getString("name"));
                 company.setAccount_no(res.getInt("account_no"));
                 company.setDebt(res.getFloat("debt"));
-                company.setExpiration_date(res.getDate("expiration_date"));
+                company.setExpiration_date(res.getDate("exp_date"));
                 company.setBalance(res.getFloat("balance"));
                 company.setCredit_limit(res.getInt("credit_limit"));
 
@@ -127,7 +126,7 @@ public class Company extends Customer{
             StringBuilder insQuery = new StringBuilder();
 
             insQuery.append("INSERT INTO companies")
-                    .append("(username, password, name, account_no, debt, expiration_date, balance, credit_limit) ")
+                    .append("(username, password, name, account_no, debt, exp_date, balance, credit_limit) ")
                     .append("VALUES (?,?,?,?,?,?,?,?)");
 
             PreparedStatement preparedStmt = con.prepareStatement(insQuery.toString());

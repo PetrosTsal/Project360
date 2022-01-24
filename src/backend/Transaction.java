@@ -12,7 +12,7 @@ public class Transaction {
     private String customerName;
     private int customerAccount_no;
     private java.sql.Date date;
-    private float amount;
+    private double amount;
     private String type;
 
     public Transaction(){
@@ -82,7 +82,7 @@ public class Transaction {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -174,7 +174,7 @@ public class Transaction {
 
         return civilian;
     }
-    public static String insert_Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, java.sql.Date date, float amount, String type) throws ClassNotFoundException, SQLException {
+    public static String insert_Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, java.sql.Date date, double amount, String type) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -201,7 +201,7 @@ public class Transaction {
             preparedStmt.setString(4, customerName);
             preparedStmt.setInt(5, customerAccount_no);
             preparedStmt.setDate(6, date);
-            preparedStmt.setFloat(7, amount);
+            preparedStmt.setDouble(7, amount);
             preparedStmt.setString(8, type);
 
             preparedStmt.execute();

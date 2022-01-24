@@ -12,7 +12,7 @@ public class Civilian extends Customer{
         setType("Civilian");
     }
 
-    public Civilian(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
+    public Civilian(String username, String password, String name, int account_no, double debt, java.sql.Date expiration_date, double balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
         setType("Civilian");
     }
