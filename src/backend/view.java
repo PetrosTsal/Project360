@@ -7,11 +7,16 @@ import java.util.*;
 public class view {
 
     public static void user_login() throws SQLException, ClassNotFoundException {
+
         String login ;
-        String usernam , passwor ;
+        String usernam , passwor;
         Scanner myObj = new Scanner(System.in);
+
+        System.out.println("Choose:");
+        System.out.println("1. Customer Login\n2. Dealer Login\n3. CCC Employee Login");
         System.out.println("Choose the category of user you belong to .");
         login = myObj.nextLine();
+
         switch (login) {
             case "Civilian":
                 System.out.println("Give me please your username .");
@@ -148,59 +153,82 @@ public class view {
     }
 
     public static void initial_menu() throws SQLException, ClassNotFoundException {
-        int choice = 0 ;
-        String register ;
+
+        int choice;
+        String register;
         Scanner myObj = new Scanner(System.in);
-        while(choice == 0) {
-            System.out.println("If you want to login to our CCC type login .If you are a new member type register.");
-            register = myObj.nextLine();
-            if (register.equals("login")) {
-                user_login();
-                choice = 1;
-            } else if (register.equals("register")) {
-                user_register();
-                choice = 1;
-            } else if (register.equals("unregister")){
-                Scanner scan = new Scanner(System.in);
-                int account_no = scan.nextInt();
 
-                SQL_Functions.unregister_User(account_no);
-            } else if (register.equals("purchase")) {
-                int dealer_accountNo = myObj.nextInt();
-                int customer_accountNo = myObj.nextInt();
-                float amount = myObj.nextFloat();
+        while(true){
 
-                SQL_Functions.purchase(dealer_accountNo, customer_accountNo, amount);
-            } else if(register.equals("DOM")){
-                SQL_Functions.dealer_of_the_month();
-            } else if(register.equals("pay")){
-                Scanner scan = new Scanner(System.in);
-                int account_no = scan.nextInt();
+            System.out.println("Menu:");
+            System.out.println("1. Login\n2. Register\n3. Exit");
 
-                SQL_Functions.pay_debt(account_no);
-            } else if(register.equals("return")){
-                Scanner scan = new Scanner(System.in);
-                int transId = scan.nextInt();
+            choice = myObj.nextInt();
 
-                SQL_Functions.return_things(transId);
-            } else if(register.equals("gold")){
-                SQL_Functions.getGoldUsers();
-            } else if(register.equals("standard")){
-                SQL_Functions.getStandardUsers();
-            } else {
-                System.out.println("Invalid input , please try again");
+            switch (choice) {
+                case 1:
+                    try_login();
+                    break;
+                case 2:
+                    try_register();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Please give one of the available answers.");
+            }
+
+
+
+
+                if (register.equals("login")) {
+                    user_login();
+                    choice = 1;
+                } else if (register.equals("register")) {
+                    user_register();
+                    choice = 1;
+                } else if (register.equals("unregister")) {
+                    Scanner scan = new Scanner(System.in);
+                    int account_no = scan.nextInt();
+
+                    SQL_Functions.unregister_User(account_no);
+                } else if (register.equals("purchase")) {
+                    int dealer_accountNo = myObj.nextInt();
+                    int customer_accountNo = myObj.nextInt();
+                    float amount = myObj.nextFloat();
+
+                    SQL_Functions.purchase(dealer_accountNo, customer_accountNo, amount);
+                } else if (register.equals("DOM")) {
+                    SQL_Functions.dealer_of_the_month();
+                } else if (register.equals("pay")) {
+                    Scanner scan = new Scanner(System.in);
+                    int account_no = scan.nextInt();
+
+                    SQL_Functions.pay_debt(account_no);
+                } else if (register.equals("return")) {
+                    Scanner scan = new Scanner(System.in);
+                    int transId = scan.nextInt();
+
+                    SQL_Functions.return_things(transId);
+                } else if (register.equals("gold")) {
+                    SQL_Functions.getGoldUsers();
+                } else if (register.equals("standard")) {
+                    SQL_Functions.getStandardUsers();
+                } else {
+                    System.out.println("Invalid input , please try again");
+                }
             }
         }
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        System.out.println("Welcome to our CCC , if you want to exit from our program type  or start if you want to continue.");
-        Scanner myObj = new Scanner(System.in);
-        String start ;
-        start = myObj.nextLine();
-        while ( !start.equals("exit")) {
-            initial_menu();
-            start = myObj.nextLine();
-        }
+
+        System.out.println("Welcome to CCC.");
+
+        initial_menu();
+
+        return;
     }
 }
+
+
