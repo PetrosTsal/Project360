@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SQL_Functions {
 
-    static int tran_id = 1;
+    static int tran_id = 9;
 
 
     public static void purchase(int account_num_d , int account_num_cus , double agora) throws SQLException, ClassNotFoundException {
@@ -313,297 +313,11 @@ public class SQL_Functions {
         return ;
     }
 
-    public static String unregister_User(int account_num) {
-        String msg = "";
-        Statement stmt = null;
-        Connection con = null;
-        String type;
-        double debt;
 
-        try {
-            con = DB.getConnection();
 
-            stmt = con.createStatement();
 
-            StringBuilder insQuery = new StringBuilder();
-            StringBuilder insQuery2 = new StringBuilder();
-            StringBuilder insQuery3 = new StringBuilder();
 
-            insQuery.append("SELECT type,debt FROM users");
-            insQuery.append(" WHERE account_no = ").append(account_num);
 
-            stmt.executeQuery(insQuery.toString());
-            ResultSet res = stmt.getResultSet();
-
-            if(res.next()) {
-                type = res.getString("type");
-                debt = res.getDouble("debt");
-
-                if(type.equals("Civilian")) {
-                    if(debt == 0) {
-                        insQuery2.append("DELETE FROM civilians");
-                        insQuery2.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt = con.prepareStatement(insQuery2.toString());
-                        pstmt.execute();
-
-                        insQuery3.append("DELETE FROM users");
-                        insQuery3.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt2 = con.prepareStatement(insQuery3.toString());
-                        pstmt2.execute();
-                    }
-                    else {
-                        System.out.println("Error, this user still has debt.");
-                    }
-                }
-                else if(type.equals("Company")) {
-                    if(debt == 0) {
-                        insQuery2.append("DELETE FROM companies");
-                        insQuery2.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt = con.prepareStatement(insQuery2.toString());
-                        pstmt.execute();
-
-                        insQuery3.append("DELETE FROM users");
-                        insQuery3.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt2 = con.prepareStatement(insQuery3.toString());
-                        pstmt2.execute();
-                    }
-                    else {
-                        System.out.println("Error, this user still has debt.");
-                    }
-                }
-                else if(type.equals("Dealer")) {
-                    if(debt == 0) {
-                        insQuery2.append("DELETE FROM dealers");
-                        insQuery2.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt = con.prepareStatement(insQuery2.toString());
-                        pstmt.execute();
-
-                        insQuery3.append("DELETE FROM users");
-                        insQuery3.append(" WHERE account_no = ").append(account_num);
-
-                        PreparedStatement pstmt2 = con.prepareStatement(insQuery3.toString());
-                        pstmt2.execute();
-                    }
-                    else {
-                        System.out.println("Error, this user still has debt.");
-                    }
-                }
-                else {
-                    System.out.println("No such type.");
-                }
-            }
-        } catch (SQLException ex) {
-            msg = ex.getMessage();
-            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DB.closeConnection(stmt, con);
-        }
-
-        return msg;
-    }
-
-    public static void dealer_of_the_month() {
-        String msg = "";
-        Statement stmt = null;
-        Statement stmt2 = null;
-        Connection con = null;
-
-        try {
-            con = DB.getConnection();
-
-            stmt = con.createStatement();
-            stmt2 = con.createStatement();
-
-            StringBuilder insQuery = new StringBuilder();
-            StringBuilder insQuery2 = new StringBuilder();
-            StringBuilder insQuery3 = new StringBuilder();
-
-            PreparedStatement pstmt = null;
-
-            insQuery.append("SELECT dealerAccount_no");
-            insQuery.append(" FROM transactions");
-            insQuery.append(" GROUP BY dealerAccount_no");
-            insQuery.append(" ORDER BY COUNT(dealerAccount_no) DESC");
-            insQuery.append(" LIMIT 1");
-
-            stmt.executeQuery(insQuery.toString());
-            ResultSet res = stmt.getResultSet();
-
-            if(res.next()) {
-                int bestDealer_accountNo = res.getInt("dealerAccount_no");
-
-                insQuery2.append("SELECT debt");
-                insQuery2.append(" FROM dealers");
-                insQuery2.append(" WHERE account_no = ").append(bestDealer_accountNo);
-
-                stmt2.executeQuery(insQuery2.toString());
-                ResultSet res2 = stmt2.getResultSet();
-
-                if(res2.next()) {
-                    double new_debt = res2.getDouble("debt");
-                    if(new_debt != 0) {
-                        new_debt = new_debt - (new_debt*0.05);
-
-                        insQuery3.append("UPDATE dealers");
-                        insQuery3.append(" SET debt = ").append(new_debt);
-                        insQuery3.append(" WHERE account_no = ").append(bestDealer_accountNo);
-
-                        pstmt = con.prepareStatement(insQuery3.toString());
-                        pstmt.execute();
-                    }
-                    else {
-                        System.out.println("This dealer has no debt to the CCC.");
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            msg = ex.getMessage();
-            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DB.closeConnection(stmt, con);
-        }
-    }
-
-    public static void getGoldUsers(){
-
-        Connection connection = null;
-        Statement statement = null;
-
-        Map<Integer, String> goldMap = new HashMap<Integer, String>();
-
-        try {
-
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-
-            User user;
-
-            StringBuilder insQueryCiv = new StringBuilder();
-            StringBuilder insQueryCom = new StringBuilder();
-            StringBuilder insQueryDeal = new StringBuilder();
-
-            insQueryCiv.append("SELECT * FROM civilians ")
-                    .append("WHERE ")
-                    .append("debt = 0");
-
-            insQueryCom.append("SELECT * FROM companies ")
-                    .append("WHERE ")
-                    .append("debt = 0");
-
-            insQueryDeal.append("SELECT * FROM dealers ")
-                    .append("WHERE ")
-                    .append("debt = 0");
-
-            statement.executeQuery(insQueryCiv.toString());
-
-            ResultSet resCiv = statement.getResultSet();
-
-            while(resCiv.next()){
-                goldMap.put(resCiv.getInt("account_no") ,resCiv.getString("name"));
-            }
-
-            statement.executeQuery(insQueryCom.toString());
-
-            ResultSet resCom = statement.getResultSet();
-
-            while(resCom.next()){
-                goldMap.put(resCom.getInt("account_no") ,resCom.getString("name"));
-            }
-
-            statement.executeQuery(insQueryDeal.toString());
-
-            ResultSet resDeal = statement.getResultSet();
-
-            while(resDeal.next()){
-                goldMap.put(resDeal.getInt("account_no") ,resDeal.getString("name"));
-            }
-
-            for (Map.Entry<Integer, String> entry : goldMap.entrySet()) {
-                System.out.println(entry.getKey() + " | " + entry.getValue());
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            DB.closeConnection(statement, connection);
-        }
-
-        return;
-    }
-
-
-    public static void getStandardUsers(){
-
-        Connection connection = null;
-        Statement statement = null;
-
-        Map<Integer, String> goldMap = new HashMap<Integer, String>();
-
-        try {
-
-            connection = DB.getConnection();
-            statement = connection.createStatement();
-
-            User user;
-
-            StringBuilder insQueryCiv = new StringBuilder();
-            StringBuilder insQueryCom = new StringBuilder();
-            StringBuilder insQueryDeal = new StringBuilder();
-
-            insQueryCiv.append("SELECT * FROM civilians ")
-                    .append("WHERE ")
-                    .append("debt > 0");
-
-            insQueryCom.append("SELECT * FROM companies ")
-                    .append("WHERE ")
-                    .append("debt > 0");
-
-            insQueryDeal.append("SELECT * FROM dealers ")
-                    .append("WHERE ")
-                    .append("debt > 0");
-
-            statement.executeQuery(insQueryCiv.toString());
-
-            ResultSet resCiv = statement.getResultSet();
-
-            while(resCiv.next()){
-                System.out.println(resCiv.getString("name"));
-                goldMap.put(resCiv.getInt("account_no") ,resCiv.getString("name"));
-            }
-
-            statement.executeQuery(insQueryCom.toString());
-
-            ResultSet resCom = statement.getResultSet();
-
-            while(resCom.next()){
-                goldMap.put(resCom.getInt("account_no") ,resCom.getString("name"));
-            }
-
-            statement.executeQuery(insQueryDeal.toString());
-
-            ResultSet resDeal = statement.getResultSet();
-
-            while(resDeal.next()){
-                goldMap.put(resDeal.getInt("account_no") ,resDeal.getString("name"));
-            }
-
-            for (Map.Entry<Integer, String> entry : goldMap.entrySet()) {
-                System.out.println(entry.getKey() + " | " + entry.getValue());
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            DB.closeConnection(statement, connection);
-        }
-
-        return;
-    }
 
     public static void  other_questions2(int choice ) throws SQLException, ClassNotFoundException {
         Scanner other = new Scanner(System.in);
@@ -668,4 +382,43 @@ public class SQL_Functions {
         }
         return;
     }
+
+    public static void other_questions3(int dealer_accountNo, int times) {
+        Connection con = null;
+        Statement stmt = null;
+        String cus_name;
+        int cus_id, ptimes;
+
+        try {
+            con = DB.getConnection();
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT customerAccount_no AS CustomerID, ");
+            insQuery.append("customerName AS CustomerName, ");
+            insQuery.append("COUNT(customerAccount_no) AS PurchaseTimes FROM");
+            insQuery.append(" (SELECT * FROM transactions");
+            insQuery.append(" WHERE dealerAccount_no = ").append(dealer_accountNo).append(")");
+            insQuery.append(" AS b");
+            insQuery.append(" GROUP BY customerAccount_no");
+            insQuery.append(" HAVING COUNT(customerAccount_no) > ").append(times);
+
+            stmt.executeQuery(insQuery.toString());
+            ResultSet res = stmt.getResultSet();
+
+            while(res.next()) {
+                cus_name = res.getString("CustomerName");
+                cus_id = res.getInt("CustomerID");
+                ptimes = res.getInt("PurchaseTimes");
+
+                System.out.println(("Dealer's ID: ") + dealer_accountNo + (",") + ("Most Usual Customer's ID: ") + (cus_id) + (",") + ("Most Usual Customer's Name: ") + cus_name + (",") + ("Purchase Times: ") + ptimes);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            DB.closeConnection(stmt, con);
+        }
+    }
+
 }
