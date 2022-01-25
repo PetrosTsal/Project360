@@ -19,7 +19,7 @@ public class Transaction {
         this.type = "-";
     }
 
-    public Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, Date date, float amount) {
+    public Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, Date date, double amount) {
         this.transactionID = transactionID;
         this.dealerName = dealerName;
         this.dealerAccount_no = dealerAccount_no;
@@ -110,7 +110,7 @@ public class Transaction {
             if (res.next() == true) {
                 transaction = new Transaction();
                 transaction.setTransactionID(res.getInt("transactionID"));
-                transaction.setAmount(res.getFloat("amount"));
+                transaction.setAmount(res.getDouble("amount"));
                 transaction.setDate(res.getDate("date"));
                 transaction.setCustomerAccount_no(res.getInt("customer_account_no"));
                 transaction.setCustomerName(res.getString("customer_name"));

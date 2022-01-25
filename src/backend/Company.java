@@ -12,7 +12,7 @@ public class Company extends Customer{
         setType("Company");
     }
 
-    public Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, double balance, int credit_limit) {
+    public Company(String username, String password, String name, int account_no, double debt, java.sql.Date expiration_date, double balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
         setType("Company");
     }
@@ -50,9 +50,9 @@ public class Company extends Customer{
                 company.setPassword(res.getString("password"));
                 company.setName(res.getString("name"));
                 company.setAccount_no(res.getInt("account_no"));
-                company.setDebt(res.getFloat("debt"));
+                company.setDebt(res.getDouble("debt"));
                 company.setExpiration_date(res.getDate("expiration_date"));
-                company.setBalance(res.getFloat("balance"));
+                company.setBalance(res.getDouble("balance"));
                 company.setCredit_limit(res.getInt("credit_limit"));
 
             } else {

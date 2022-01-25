@@ -364,7 +364,7 @@ public class SQL_Functions {
             while (res.next() == true) {
                 Transaction insert_tra = new Transaction();
                 insert_tra.setTransactionID(res.getInt("transactionID"));
-                insert_tra.setAmount(res.getFloat("amount"));
+                insert_tra.setAmount(res.getDouble("amount"));
                 insert_tra.setDate(res.getDate("date"));
                 insert_tra.setCustomerAccount_no(res.getInt("customerAccount_no"));
                 insert_tra.setCustomerName(res.getString("customerName"));

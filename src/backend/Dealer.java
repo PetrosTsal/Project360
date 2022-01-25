@@ -73,9 +73,9 @@ public class Dealer extends User{
                 dealer.setPassword(res.getString("password"));
                 dealer.setName(res.getString("name"));
                 dealer.setAccount_no(res.getInt("account_no"));
-                dealer.setDebt(res.getFloat("debt"));
-                dealer.setCommission(res.getFloat("commission"));
-                dealer.setEarnings(res.getFloat("earnings"));
+                dealer.setDebt(res.getDouble("debt"));
+                dealer.setCommission(res.getDouble("commission"));
+                dealer.setEarnings(res.getDouble("earnings"));
 
             } else {
                 System.out.println("Dealer with account_no " + account_num + "was not found");

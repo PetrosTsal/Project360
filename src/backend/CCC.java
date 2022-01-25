@@ -39,7 +39,7 @@ public class CCC {
                 user.setPassword(res.getString("password"));
                 user.setName(res.getString("name"));
                 user.setAccount_no(res.getInt("account_no"));
-                user.setDebt(res.getFloat("debt"));
+                user.setDebt(res.getDouble("debt"));
                 user.setType(res.getString("type"));
 
             } else {
@@ -83,9 +83,9 @@ public class CCC {
                civilian.setPassword(res.getString("password"));
                civilian.setName(res.getString("name"));
                civilian.setAccount_no(res.getInt("account_no"));
-               civilian.setDebt(res.getFloat("debt"));
+               civilian.setDebt(res.getDouble("debt"));
                civilian.setExpiration_date(res.getDate("expiration_date"));
-               civilian.setBalance(res.getFloat("balance"));
+               civilian.setBalance(res.getDouble("balance"));
                civilian.setCredit_limit(res.getInt("credit_limit"));
 
            } else {
@@ -128,9 +128,9 @@ public class CCC {
                 company.setPassword(res.getString("password"));
                 company.setName(res.getString("name"));
                 company.setAccount_no(res.getInt("account_no"));
-                company.setDebt(res.getFloat("debt"));
+                company.setDebt(res.getDouble("debt"));
                 company.setExpiration_date(res.getDate("exp_date"));
-                company.setBalance(res.getFloat("balance"));
+                company.setBalance(res.getDouble("balance"));
                 company.setCredit_limit(res.getInt("credit_limit"));
 
             } else {
@@ -174,9 +174,9 @@ public class CCC {
                 dealer.setPassword(res.getString("password"));
                 dealer.setName(res.getString("name"));
                 dealer.setAccount_no(res.getInt("account_no"));
-                dealer.setDebt(res.getFloat("debt"));
-                dealer.setCommission(res.getFloat("commission"));
-                dealer.setEarnings(res.getFloat("earnings"));
+                dealer.setDebt(res.getDouble("debt"));
+                dealer.setCommission(res.getDouble("commission"));
+                dealer.setEarnings(res.getDouble("earnings"));
 
             } else {
                 System.out.println("Dealer with username " + username + "was not found");

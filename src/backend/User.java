@@ -102,7 +102,7 @@ public class User {
                 user.setPassword(res.getString("password"));
                 user.setName(res.getString("name"));
                 user.setAccount_no(res.getInt("account_no"));
-                user.setDebt(res.getFloat("debt"));
+                user.setDebt(res.getDouble("debt"));
                 user.setType(res.getString("type"));
 
             } else {

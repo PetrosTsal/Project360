@@ -50,9 +50,9 @@ public class Civilian extends Customer{
                 civilian.setPassword(res.getString("password"));
                 civilian.setName(res.getString("name"));
                 civilian.setAccount_no(res.getInt("account_no"));
-                civilian.setDebt(res.getFloat("debt"));
+                civilian.setDebt(res.getDouble("debt"));
                 civilian.setExpiration_date(res.getDate("expiration_date"));
-                civilian.setBalance(res.getFloat("balance"));
+                civilian.setBalance(res.getDouble("balance"));
                 civilian.setCredit_limit(res.getInt("credit_limit"));
 
             } else {
@@ -95,9 +95,9 @@ public class Civilian extends Customer{
                 civilian.setPassword(res.getString("password"));
                 civilian.setName(res.getString("name"));
                 civilian.setAccount_no(res.getInt("account_no"));
-                civilian.setDebt(res.getFloat("debt"));
+                civilian.setDebt(res.getDouble("debt"));
                 civilian.setExpiration_date(res.getDate("expiration_date"));
-                civilian.setBalance(res.getFloat("balance"));
+                civilian.setBalance(res.getDouble("balance"));
                 civilian.setCredit_limit(res.getInt("credit_limit"));
 
             } else {

@@ -164,11 +164,11 @@ public class view {
                     }
 
                     System.out.println("Earnings: ");
-                    earnings = scanner.nextFloat();
+                    earnings = scanner.nextDouble();
                     while (earnings < 0) {
                         System.out.println("Give non-negative earnings please");
                         System.out.println("Earnings: ");
-                        earnings = scanner.nextFloat();
+                        earnings = scanner.nextDouble();
                     }
 
                     Dealer deal = new Dealer();
