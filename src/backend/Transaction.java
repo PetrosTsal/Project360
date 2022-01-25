@@ -16,7 +16,7 @@ public class Transaction {
     private String type;
 
     public Transaction(){
-        this.type = "charge/credit";
+        this.type = "-";
     }
 
     public Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, Date date, float amount) {
@@ -27,7 +27,7 @@ public class Transaction {
         this.customerAccount_no = customerAccount_no;
         this.date = date;
         this.amount = amount;
-        this.type = "charge/credit";
+        this.type = "-";
     }
 
     public int getTransactionID() {
@@ -130,50 +130,6 @@ public class Transaction {
         return transaction;
     }
 
-    public static Civilian getCivilian2(int account_num) throws ClassNotFoundException, SQLException {
-        Civilian civilian = null;
-        Statement stmt = null;
-        Connection con = null;
-        try {
-
-            con = DB.getConnection();
-
-            stmt = con.createStatement();
-
-            StringBuilder insQuery = new StringBuilder();
-
-            insQuery.append("SELECT * FROM civilians ")
-                    .append("WHERE ")
-                    .append("account_no = ").append("'").append(account_num).append("'");
-
-            stmt.executeQuery(insQuery.toString());
-
-            ResultSet res = stmt.getResultSet();
-
-            if (res.next() == true) {
-                civilian = new Civilian();
-                civilian.setUsername(res.getString("username"));
-                civilian.setPassword(res.getString("password"));
-                civilian.setName(res.getString("name"));
-                civilian.setAccount_no(res.getInt("account_no"));
-                civilian.setDebt(res.getFloat("debt"));
-                civilian.setExpiration_date(res.getDate("expiration_date"));
-                civilian.setBalance(res.getFloat("balance"));
-                civilian.setCredit_limit(res.getInt("credit_limit"));
-
-            } else {
-                System.out.println("Civilian with account_no " + account_num + "was not found");
-            }
-        } catch (SQLException ex) {
-            // Log exception
-            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            // close connection
-            DB.closeConnection(stmt, con);
-        }
-
-        return civilian;
-    }
     public static String insert_Transaction(int transactionID, String dealerName, int dealerAccount_no, String customerName, int customerAccount_no, java.sql.Date date, double amount, String type) throws ClassNotFoundException, SQLException {
 
         String msg = "";

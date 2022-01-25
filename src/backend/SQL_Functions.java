@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SQL_Functions {
 
-    static int tran_id = 9;
+    static int tran_id = 1;
 
 
     public static void purchase(int account_num_d , int account_num_cus , double agora) throws SQLException, ClassNotFoundException {
@@ -19,36 +19,37 @@ public class SQL_Functions {
         Dealer deal = new Dealer();
         deal = Dealer.getDealer2(account_num_d);
         String tipos = cust.getType();
-        double diathesimo;
+        double diathesimo , credit_now ;
         if (tipos.equals("Civilian")){
             civ = civ.getCivilian2(account_num_cus);
             diathesimo = civ.getBalance();
-
+            credit_now = civ.getCredit_limit();
             System.out.println(civ.getName() + diathesimo);
-            if ( diathesimo >= agora){
+            if ( diathesimo >= agora  &&  credit_now >= agora){
                 civ.setBalance(diathesimo-agora);
-                //update me sql ton pinaka civillian me ta nea stoixeia
             }else{
-                System.out.println("Transaction cannot happen , because of not enough Civillian's balance.");
+                System.out.println("Transaction cannot happen , because of not enough Civillian's balance or Credit_limit.");
+                return ;
             }
         }else if ( tipos.equals("Company")){
             comp = comp.getCompany2(account_num_cus);
             diathesimo = comp.getBalance() ;
-            if ( diathesimo >= agora){
+            credit_now = comp.getCredit_limit();
+            if ( diathesimo >= agora && credit_now >= agora){
                 comp.setBalance(diathesimo-agora);
-                //update me sql ton pinaka company me ta nea stoixeia
             }else{
-                System.out.println("Transaction cannot happen , because of not enough Company's balance.");
+                System.out.println("Transaction cannot happen , because of not enough Company's balance or Credit Limit.");
+                return;
             }
         }
 
-        double updated_earnings = deal.getEarnings() + agora;
+        double updated_earnings = deal.getEarnings() + (agora - (agora* deal.getCommission()));
         deal.setEarnings(updated_earnings);
 
         String msg = "";
         Statement stmt = null;
         Statement stmt2 = null;
-        Statement stmt3 = null;
+
         Connection con = null;
 
         try {
@@ -57,7 +58,7 @@ public class SQL_Functions {
 
             stmt = con.createStatement();
             stmt2 = con.createStatement();
-            stmt3 = con.createStatement();
+
 
             StringBuilder insQuery = new StringBuilder();
             StringBuilder insQuery2 = new StringBuilder();
@@ -89,11 +90,10 @@ public class SQL_Functions {
             preparedStmt2 = con.prepareStatement(insQuery2.toString());
             preparedStmt2.execute();
 
-            msg = "Balance updated Succesfully";
+            msg = "Balance updated succesfully.";
 
         } catch (SQLException ex) {
             msg = ex.getMessage();
-            // Log exception
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
@@ -102,7 +102,7 @@ public class SQL_Functions {
         }
 
         java.sql.Date dat = new Date(2022);
-        Transaction.insert_Transaction(++tran_id, deal.getName(), deal.getAccount_no(), cust.getName(), cust.getAccount_no(), dat, agora, "charge/credit");
+        Transaction.insert_Transaction(++tran_id, deal.getName(), deal.getAccount_no(), cust.getName(), cust.getAccount_no(), dat, agora, "purchase");
 
         return ;
     }
@@ -110,27 +110,31 @@ public class SQL_Functions {
 
     public static void return_things(int transs_id) throws SQLException, ClassNotFoundException {
         Transaction tra = new Transaction()  ;
-
-        Statement stmt = null;
+        String new_type = "return";
+        Statement stmt = null ,stmt3 = null;
         Connection con = null;
 
         try {
-
             con = DB.getConnection();
 
             stmt = con.createStatement();
+            stmt3 = con.createStatement();
 
+            StringBuilder insQuery2 = new StringBuilder();
             StringBuilder insQuery = new StringBuilder();
 
             insQuery.append("SELECT * FROM transactions ")
                     .append("WHERE ")
                     .append(" transactionID = ").append(transs_id);
 
+            insQuery2.append("UPDATE transactions ");
+            insQuery2.append(" SET type = ").append("'").append(new_type).append("'");
+            insQuery2.append(" WHERE transactionID = ").append(transs_id);
 
             stmt.executeQuery(insQuery.toString());
+            stmt3.executeQuery(insQuery2.toString());
 
             ResultSet res = stmt.getResultSet();
-            //-----------------------den eixa database kai den kserw onomata sthlwn
             if (res.next() == true) {
                 tra.setTransactionID(res.getInt("transactionID"));
                 tra.setDealerName(res.getString("dealerName"));
@@ -145,8 +149,8 @@ public class SQL_Functions {
                 System.out.println("Transaction with transaction_id " + transs_id + "was not found");
             }
         } catch (SQLException ex) {
-            // Log exception
-            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
+           Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
             DB.closeConnection(stmt, con);
@@ -167,12 +171,12 @@ public class SQL_Functions {
                 Civilian civ = new Civilian();
                 civ = Civilian.getCivilian2(c_acc);
                 balance_now = civ.getBalance();
-                civ.setBalance(balance_now+epistrofi);//mallon tha xreiastei to amount tou transaction na ginei float
+                civ.setBalance(balance_now+epistrofi);
             }else if ( tipos.equals("Company")){
                 Company comp = new Company();
                 comp = Company.getCompany2(c_acc);
                 balance_now = comp.getBalance();
-                comp.setBalance(balance_now+epistrofi);//mallon tha xreiastei to amount tou transaction na ginei float
+                comp.setBalance(balance_now+epistrofi);
             }
             earnings_now = deal.getEarnings();
             if ( earnings_now <= epistrofi ){
@@ -185,12 +189,12 @@ public class SQL_Functions {
                 deal.setEarnings(earnings_now-epistrofi);
             }
 
-            Statement stmt2 = null , stmt3 = null , stmt4 = null;
+            Statement stmt2 = null ;
             Connection con2 = null;
             try{
                 con2 = DB.getConnection();
                 stmt2 = con2.createStatement();
-                stmt3 = con2.createStatement();
+               ;
                 StringBuilder insQuery2 = new StringBuilder() , insQuery3 = new StringBuilder() , insQuery4 = new StringBuilder();
                 PreparedStatement preparedStmt2 , preparedStmt3 , preparedStmt4;
 
@@ -235,6 +239,7 @@ public class SQL_Functions {
 
     //leitourgia 5
     public static void pay_debt(int account_num) throws SQLException, ClassNotFoundException {
+
         User us = new User();
         us = User.getUser2(account_num) ;
         String tipos = us.getType();
@@ -252,7 +257,6 @@ public class SQL_Functions {
             deal.setDebt(0);
         }
 
-        String msg = "";
         Statement stmt = null;
         Statement stmt2 = null;
 
@@ -287,7 +291,7 @@ public class SQL_Functions {
                 insQuery.append(" SET debt = ").append(0);
                 insQuery.append(" WHERE account_no = ").append(account_num);
             }
-            //-------------- mporei oi users na ginontai update apo ta apo panw queries na to doume
+
             insQuery2.append("UPDATE users ");
             insQuery2.append(" SET debt = ").append(0);
             insQuery2.append(" WHERE account_no = ").append(account_num);
@@ -298,18 +302,17 @@ public class SQL_Functions {
             preparedStmt2.execute();
 
 
-            msg = "Debt paid succesfully for the  " +tipos +".";
+
 
         } catch (SQLException ex) {
-            msg = ex.getMessage();
-            // Log exception
+            ex.printStackTrace();
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             // close connection
             DB.closeConnection(stmt, con);
             DB.closeConnection(stmt2, con);
         }
-        System.out.println(msg);
+        System.out.println("Debt paid succesfully for the  " +tipos +".");;
         return ;
     }
 
@@ -324,7 +327,6 @@ public class SQL_Functions {
         int otherinpt;
         List<Transaction> traList = new ArrayList<>();
         Statement stmt = null;
-        Statement stmt2 = null;
         Connection con = null;
 
         try {
@@ -355,9 +357,8 @@ public class SQL_Functions {
 
                     stmt.executeQuery(insQuery.toString());
                 }
-
-
             }
+
             ResultSet res = stmt.getResultSet();
 
             while (res.next() == true) {
@@ -380,45 +381,8 @@ public class SQL_Functions {
         } catch(SQLException e){
             e.printStackTrace();
         }
+
         return;
-    }
-
-    public static void other_questions3(int dealer_accountNo, int times) {
-        Connection con = null;
-        Statement stmt = null;
-        String cus_name;
-        int cus_id, ptimes;
-
-        try {
-            con = DB.getConnection();
-            stmt = con.createStatement();
-
-            StringBuilder insQuery = new StringBuilder();
-
-            insQuery.append("SELECT customerAccount_no AS CustomerID, ");
-            insQuery.append("customerName AS CustomerName, ");
-            insQuery.append("COUNT(customerAccount_no) AS PurchaseTimes FROM");
-            insQuery.append(" (SELECT * FROM transactions");
-            insQuery.append(" WHERE dealerAccount_no = ").append(dealer_accountNo).append(")");
-            insQuery.append(" AS b");
-            insQuery.append(" GROUP BY customerAccount_no");
-            insQuery.append(" HAVING COUNT(customerAccount_no) > ").append(times);
-
-            stmt.executeQuery(insQuery.toString());
-            ResultSet res = stmt.getResultSet();
-
-            while(res.next()) {
-                cus_name = res.getString("CustomerName");
-                cus_id = res.getInt("CustomerID");
-                ptimes = res.getInt("PurchaseTimes");
-
-                System.out.println(("Dealer's ID: ") + dealer_accountNo + (",") + ("Most Usual Customer's ID: ") + (cus_id) + (",") + ("Most Usual Customer's Name: ") + cus_name + (",") + ("Purchase Times: ") + ptimes);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            DB.closeConnection(stmt, con);
-        }
     }
 
 }
