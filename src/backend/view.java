@@ -187,6 +187,11 @@ public class view {
                 SQL_Functions.getGoldUsers();
             } else if(register.equals("standard")){
                 SQL_Functions.getStandardUsers();
+            } else if(register.equals("q3")) {
+                Scanner scan = new Scanner(System.in);
+                int dealerNo = scan.nextInt();
+                int t = scan.nextInt();
+                SQL_Functions.other_questions3(dealerNo, t);
             } else {
                 System.out.println("Invalid input , please try again");
             }

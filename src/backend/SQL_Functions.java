@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SQL_Functions {
 
-    static int tran_id = 1;
+    static int tran_id = 9;
 
 
     public static void purchase(int account_num_d , int account_num_cus , double agora) throws SQLException, ClassNotFoundException {
@@ -673,7 +673,7 @@ public class SQL_Functions {
         Connection con = null;
         Statement stmt = null;
         String cus_name;
-        int cus_id;
+        int cus_id, ptimes;
 
         try {
             con = DB.getConnection();
@@ -690,13 +690,15 @@ public class SQL_Functions {
             insQuery.append(" GROUP BY customerAccount_no");
             insQuery.append(" HAVING COUNT(customerAccount_no) > ").append(times);
 
+            stmt.executeQuery(insQuery.toString());
             ResultSet res = stmt.getResultSet();
 
-            if(res.next()) {
+            while(res.next()) {
                 cus_name = res.getString("CustomerName");
                 cus_id = res.getInt("CustomerID");
+                ptimes = res.getInt("PurchaseTimes");
 
-                System.out.println(("Dealer's ID: ") + dealer_accountNo + (",") + ("Most Usual Customer's ID: ") + (cus_id) + (",") + ("Most Usual Customer's Name: ") + cus_name + (",") + ("Purchase Times: ") + times);
+                System.out.println(("Dealer's ID: ") + dealer_accountNo + (",") + ("Most Usual Customer's ID: ") + (cus_id) + (",") + ("Most Usual Customer's Name: ") + cus_name + (",") + ("Purchase Times: ") + ptimes);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
