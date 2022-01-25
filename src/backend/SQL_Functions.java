@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class SQL_Functions {
 
-    static int tran_id = 1;
+    static int tran_id = 9;
 
 
     public static void purchase(int account_num_d , int account_num_cus , double agora) throws SQLException, ClassNotFoundException {
@@ -382,4 +382,43 @@ public class SQL_Functions {
         }
         return;
     }
+
+    public static void other_questions3(int dealer_accountNo, int times) {
+        Connection con = null;
+        Statement stmt = null;
+        String cus_name;
+        int cus_id, ptimes;
+
+        try {
+            con = DB.getConnection();
+            stmt = con.createStatement();
+
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT customerAccount_no AS CustomerID, ");
+            insQuery.append("customerName AS CustomerName, ");
+            insQuery.append("COUNT(customerAccount_no) AS PurchaseTimes FROM");
+            insQuery.append(" (SELECT * FROM transactions");
+            insQuery.append(" WHERE dealerAccount_no = ").append(dealer_accountNo).append(")");
+            insQuery.append(" AS b");
+            insQuery.append(" GROUP BY customerAccount_no");
+            insQuery.append(" HAVING COUNT(customerAccount_no) > ").append(times);
+
+            stmt.executeQuery(insQuery.toString());
+            ResultSet res = stmt.getResultSet();
+
+            while(res.next()) {
+                cus_name = res.getString("CustomerName");
+                cus_id = res.getInt("CustomerID");
+                ptimes = res.getInt("PurchaseTimes");
+
+                System.out.println(("Dealer's ID: ") + dealer_accountNo + (",") + ("Most Usual Customer's ID: ") + (cus_id) + (",") + ("Most Usual Customer's Name: ") + cus_name + (",") + ("Purchase Times: ") + ptimes);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            DB.closeConnection(stmt, con);
+        }
+    }
+
 }
