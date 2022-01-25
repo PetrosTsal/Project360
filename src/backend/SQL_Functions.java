@@ -322,9 +322,8 @@ public class SQL_Functions {
 
 
 
-    public static void  other_questions2(int choice ) throws SQLException, ClassNotFoundException {
-        Scanner other = new Scanner(System.in);
-        int otherinpt;
+    public static void  other_questions2a() throws SQLException, ClassNotFoundException {
+
         List<Transaction> traList = new ArrayList<>();
         Statement stmt = null;
         Connection con = null;
@@ -335,29 +334,11 @@ public class SQL_Functions {
             stmt = con.createStatement();
 
             StringBuilder insQuery = new StringBuilder();
-            if (choice == 2) {
-                System.out.println("All transactions' infos :");
-                insQuery.append("SELECT * FROM transactions");
-                stmt.executeQuery(insQuery.toString());
-            }else if (choice == 3) {
-                System.out.println("Give me the user's account_no , whom you looking for his transactions");
-                otherinpt = other.nextInt();
-                User us = new User();
-                us = User.getUser2(otherinpt);
-                String tipos = us.getType();
-                if ( tipos.equals("Dealer")) {
-                    insQuery.append("SELECT * FROM transactions")
-                            .append(" WHERE")
-                            .append(" dealerAccount_no = ").append(otherinpt);
-                    stmt.executeQuery(insQuery.toString());
-                }else {
-                    insQuery.append("SELECT * FROM transactions")
-                            .append(" WHERE")
-                            .append(" customerAccount_no = ").append(otherinpt);
 
-                    stmt.executeQuery(insQuery.toString());
-                }
-            }
+            System.out.println("All transactions' infos :");
+            insQuery.append("SELECT * FROM transactions");
+            stmt.executeQuery(insQuery.toString());
+
 
             ResultSet res = stmt.getResultSet();
 
@@ -380,9 +361,65 @@ public class SQL_Functions {
 
         } catch(SQLException e){
             e.printStackTrace();
+        }finally {
+            // close connection
+            DB.closeConnection(stmt, con);
         }
 
         return;
+    }
+
+
+    public static void other_questions2b(int account_num) throws SQLException, ClassNotFoundException {
+        List<Transaction> traList = new ArrayList<>();
+        Statement stmt = null;
+        Connection con = null;
+        User us = new User();
+        us = User.getUser2(account_num);
+        String tipos = us.getType();
+
+        try {
+
+            con = DB.getConnection();
+            stmt = con.createStatement();
+            StringBuilder insQuery = new StringBuilder();
+
+            if (tipos.equals("Dealer")){
+                insQuery.append("SELECT * FROM transactions")
+                .append(" WHERE")
+                .append(" dealerAccount_no = ").append(account_num);
+                stmt.executeQuery(insQuery.toString());
+            }else{
+                insQuery.append("SELECT * FROM transactions")
+                .append(" WHERE")
+                .append(" customerAccount_no = ").append(account_num);
+                stmt.executeQuery(insQuery.toString());
+            }
+            ResultSet res = stmt.getResultSet();
+            while (res.next() == true) {
+                Transaction insert_tra = new Transaction();
+                insert_tra.setTransactionID(res.getInt("transactionID"));
+                insert_tra.setAmount(res.getDouble("amount"));
+                insert_tra.setDate(res.getDate("date"));
+                insert_tra.setCustomerAccount_no(res.getInt("customerAccount_no"));
+                insert_tra.setCustomerName(res.getString("customerName"));
+                insert_tra.setDealerAccount_no(res.getInt("dealerAccount_no"));
+                insert_tra.setDealerName(res.getString("dealerName"));
+                traList.add(insert_tra);
+            }
+            System.out.println("User with username : " +us.getUsername() +"has the following transactions :");
+            for (int i = 0; i < traList.size(); i++) {
+                System.out.println("Transaction with id :" + traList.get(i).getTransactionID() + " , amount :" + traList.get(i).getAmount()
+                        + ", date :" + traList.get(i).getDate() + ", customer's account_no :" + traList.get(i).getCustomerAccount_no() + "customer's name :" + traList.get(i).getCustomerName()
+                        + ", dealer's account_no :" + traList.get(i).getDealerAccount_no() + ", dealer's name : " + traList.get(i).getDealerName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DB.closeConnection(stmt, con);
+        }
+
+        return ;
     }
 
 }
