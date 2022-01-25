@@ -433,7 +433,7 @@ public class CCC {
 
     //-----------------------telos kleisimou logariasmou -----------------------------//
     //----------------------stoixeia kalou - kakou xrhsth kai emporos toumhna------------//
-    public static void dealer_of_the_month() {
+    public static void dealer_of_the_month(String month) {
         String msg = "";
         Statement stmt = null;
         Statement stmt2 = null;
@@ -453,6 +453,8 @@ public class CCC {
 
             insQuery.append("SELECT dealerAccount_no");
             insQuery.append(" FROM transactions");
+            insQuery.append(" WHERE MONTHNAME(date) = ").append("'").append(month).append("'");
+            insQuery.append(" AND EXTRACT(YEAR FROM date) = ").append(2022);
             insQuery.append(" GROUP BY dealerAccount_no");
             insQuery.append(" ORDER BY COUNT(dealerAccount_no) DESC");
             insQuery.append(" LIMIT 1");
@@ -481,9 +483,11 @@ public class CCC {
 
                         pstmt = con.prepareStatement(insQuery3.toString());
                         pstmt.execute();
+
+                        System.out.println(("The dealer of the month was the one with id: ") + bestDealer_accountNo + (" and his debt was reduced by 5%"));
                     }
                     else {
-                        System.out.println("This dealer has no debt to the CCC.");
+                        System.out.println(("The dealer of the month was the one with id: ") + bestDealer_accountNo + (", but he has no debt to the CCC."));
                     }
                 }
             }
