@@ -422,4 +422,30 @@ public class SQL_Functions {
         return ;
     }
 
+    public static int getidxTr() throws SQLException {
+        Statement stmt = null;
+        Connection con = null;
+        int idx = 0 ;
+
+        try{
+            con = DB.getConnection();
+            stmt = con.createStatement();
+            StringBuilder insQuery = new StringBuilder();
+
+            insQuery.append("SELECT LAST transactionID FROM transactions");
+            stmt.executeQuery(insQuery.toString());
+            ResultSet res = stmt.getResultSet();
+
+            if (res.next() == true){
+                idx = res.getInt("transactionID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            DB.closeConnection(stmt, con);
+        }
+        return idx;
+    }
+
 }
