@@ -181,7 +181,9 @@ public class view {
         }
     }
 
-    public static void makeTransaction(int dealer_account_no, int customer_account_no, double amount) throws SQLException, ClassNotFoundException {
+
+    public static void employee_login(){
+
 
     }
 
