@@ -87,7 +87,7 @@ public class Transaction {
     }
 
     // functions
-    public static Transaction getTransaction(String transactionId) throws ClassNotFoundException, SQLException {
+    public static Transaction getTransaction(int transactionId) throws ClassNotFoundException, SQLException {
         Transaction transaction = null;
         Statement stmt = null;
         Connection con = null;
