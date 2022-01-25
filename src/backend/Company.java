@@ -12,7 +12,7 @@ public class Company extends Customer{
         setType("Company");
     }
 
-    public Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance, int credit_limit) {
+    public Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, double balance, int credit_limit) {
         super(username, password, name, account_no, debt, expiration_date, balance, credit_limit);
         setType("Company");
     }

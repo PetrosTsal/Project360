@@ -119,7 +119,7 @@ public class User {
         return user;
     }
 
-    public static String register_User(String username, String password, String name, int account_no, float debt, String type) throws ClassNotFoundException, SQLException {
+    public static String register_User(String username, String password, String name, int account_no, double debt, String type) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -145,7 +145,7 @@ public class User {
             preparedStmt.setString(2, password);
             preparedStmt.setString(3, name);
             preparedStmt.setInt(4, account_no);
-            preparedStmt.setFloat(5, debt);
+            preparedStmt.setDouble(5, debt);
             preparedStmt.setString(6, type);
 
             preparedStmt.execute();

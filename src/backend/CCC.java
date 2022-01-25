@@ -1,6 +1,7 @@
 package backend;
 
 import java.sql.*;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -194,7 +195,7 @@ public class CCC {
     //----telos login-----------------------------------------------//
 
     //--------------arxizei register--------------------------------//
-    public static String register_Civilian(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance , int credit_limit) throws ClassNotFoundException, SQLException {
+    public static String register_Civilian(String username, String password, String name, int account_no, double debt, java.sql.Date expiration_date, double balance , int credit_limit) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -219,9 +220,9 @@ public class CCC {
             preparedStmt.setString(2, password);
             preparedStmt.setString(3, name);
             preparedStmt.setInt(4, account_no);
-            preparedStmt.setFloat(5, debt);
+            preparedStmt.setDouble(5, debt);
             preparedStmt.setDate(6, expiration_date);
-            preparedStmt.setFloat(7, balance);
+            preparedStmt.setDouble(7, balance);
             preparedStmt.setInt(8, credit_limit);
 
             preparedStmt.execute();
@@ -241,7 +242,7 @@ public class CCC {
         return msg;
     }
 
-    public static String register_Company(String username, String password, String name, int account_no, float debt, java.sql.Date expiration_date, float balance , int credit_limit) throws ClassNotFoundException, SQLException {
+    public static String register_Company(String username, String password, String name, int account_no, double debt, java.sql.Date expiration_date, double balance , int credit_limit) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -266,9 +267,9 @@ public class CCC {
             preparedStmt.setString(2, password);
             preparedStmt.setString(3, name);
             preparedStmt.setInt(4, account_no);
-            preparedStmt.setFloat(5, debt);
+            preparedStmt.setDouble(5, debt);
             preparedStmt.setDate(6, expiration_date);
-            preparedStmt.setFloat(7, balance);
+            preparedStmt.setDouble(7, balance);
             preparedStmt.setInt(8, credit_limit);
 
             preparedStmt.execute();
@@ -288,7 +289,7 @@ public class CCC {
         return msg;
     }
 
-    public static String register_Dealer(String username, String password, String name, int account_no, float debt, float commission,float earnings) throws ClassNotFoundException, SQLException {
+    public static String register_Dealer(String username, String password, String name, int account_no, double debt, double commission, double earnings) throws ClassNotFoundException, SQLException {
 
         String msg = "";
         Statement stmt = null;
@@ -313,9 +314,9 @@ public class CCC {
             preparedStmt.setString(2, password);
             preparedStmt.setString(3, name);
             preparedStmt.setInt(4, account_no);
-            preparedStmt.setFloat(5, debt);
-            preparedStmt.setFloat(6, commission);
-            preparedStmt.setFloat(7, earnings);
+            preparedStmt.setDouble(5, debt);
+            preparedStmt.setDouble(6, commission);
+            preparedStmt.setDouble(7, earnings);
 
             preparedStmt.execute();
 
