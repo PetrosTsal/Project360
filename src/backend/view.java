@@ -19,7 +19,7 @@ public class view {
                 System.out.println("Give me please and your password .");
                 passwor = myObj.nextLine();
                 Civilian civi = new Civilian() ;
-                if ( civi.getCivilian(usernam,passwor) != null){
+                if ( CCC.ret_Civilian(usernam,passwor) != null){
                     System.out.println("Congratulations" +usernam +"you have succesfully logged in to our CCC ");
                     break;
                 }else {
@@ -33,7 +33,7 @@ public class view {
                 System.out.println("Give me please and your password .");
                 passwor = myObj.nextLine();
                 Company comp = new Company() ;
-                if ( comp.getCompany(usernam,passwor) != null){
+                if ( CCC.ret_Company(usernam,passwor) != null){
                     System.out.println("Congratulations" +usernam +"you have succesfully logged in to our CCC ");
                     break;
                 }else {
@@ -47,7 +47,7 @@ public class view {
                 System.out.println("Give me please and your password .");
                 passwor = myObj.nextLine();
                 Dealer deal = new Dealer() ;
-                if ( deal.getDealer(usernam,passwor) != null){
+                if ( CCC.ret_Dealer(usernam,passwor) != null){
                     System.out.println("Congratulations" +usernam +"you have succesfully logged in to our CCC ");
                     break;
                 }else {
@@ -93,7 +93,7 @@ public class view {
                 System.out.println("Give me your card's credit limit please");
                 credit_limi = myObj.nextInt();
                 Civilian civ = new Civilian();
-                System.out.println(civ.register_Civilian(usernam,passwor,nam,account_n,deb,expiration_dat,balanc,credit_limi));
+                System.out.println(CCC.register_Civilian(usernam,passwor,nam,account_n,deb,expiration_dat,balanc,credit_limi));
                 break;
             case "Company":
                 System.out.println("Give me all your personal infos please");
@@ -114,7 +114,7 @@ public class view {
                 System.out.println("Give me your card's credit limit please");
                 credit_limi = myObj.nextInt();
                 Company comp = new Company();
-                System.out.println(comp.register_Company(usernam,passwor,nam,account_n,deb,expiration_dat,balanc,credit_limi));
+                System.out.println(CCC.register_Company(usernam,passwor,nam,account_n,deb,expiration_dat,balanc,credit_limi));
                 break;
             case "Dealer":
                 System.out.println("Give me all your personal infos please");
@@ -133,7 +133,7 @@ public class view {
                 System.out.println("Give me your earnings please");
                 earning = myObj.nextFloat();
                 Dealer deal = new Dealer() ;
-                System.out.println(deal.register_Dealer(usernam,passwor,nam,account_n,deb,commissio,earning));
+                System.out.println(CCC.register_Dealer(usernam,passwor,nam,account_n,deb,commissio,earning));
                 break;
             default :
                 System.out.println("The category you chose is not valid . Please try again. ");
@@ -164,7 +164,7 @@ public class view {
                 Scanner scan = new Scanner(System.in);
                 int account_no = scan.nextInt();
 
-                SQL_Functions.unregister_User(account_no);
+                CCC.unregister_User(account_no);
             } else if (register.equals("purchase")) {
                 int dealer_accountNo = myObj.nextInt();
                 int customer_accountNo = myObj.nextInt();
@@ -172,7 +172,7 @@ public class view {
 
                 SQL_Functions.purchase(dealer_accountNo, customer_accountNo, amount);
             } else if(register.equals("DOM")){
-                SQL_Functions.dealer_of_the_month();
+                CCC.dealer_of_the_month();
             } else if(register.equals("pay")){
                 Scanner scan = new Scanner(System.in);
                 int account_no = scan.nextInt();
@@ -184,9 +184,9 @@ public class view {
 
                 SQL_Functions.return_things(transId);
             } else if(register.equals("gold")){
-                SQL_Functions.getGoldUsers();
+                CCC.getGoldUsers();
             } else if(register.equals("standard")){
-                SQL_Functions.getStandardUsers();
+                CCC.getStandardUsers();
             } else {
                 System.out.println("Invalid input , please try again");
             }

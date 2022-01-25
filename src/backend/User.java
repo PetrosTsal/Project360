@@ -74,48 +74,7 @@ public class User {
         this.debt = debt;
     }
 
-    public static User getUser(String username , String password) throws ClassNotFoundException , SQLException {
-        User user = null ;
-        Statement stmnt = null;
-        Connection con = null;
 
-        try {
-            con = DB.getConnection();
-
-            stmnt = con.createStatement();
-
-            StringBuilder insQuery = new StringBuilder();
-
-            insQuery.append("SELECT * FROM users ")
-                    .append(" WHERE ")
-                    .append(" username = ").append("'").append(username).append("AND password = ").append("'").append(password).append("'");
-
-            stmnt.execute(insQuery.toString());
-
-            ResultSet res = stmnt.getResultSet();
-
-            if (res.next() == true) {
-                user = new User();
-                user.setUsername(res.getString("username"));
-                user.setPassword(res.getString("password"));
-                user.setName(res.getString("name"));
-                user.setAccount_no(res.getInt("account_no"));
-                user.setDebt(res.getFloat("debt"));
-                user.setType(res.getString("type"));
-
-            } else {
-                System.out.println("User with username " + username + "was not found");
-            }
-        } catch (SQLException ex) {
-            // Log exception
-            //Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            // close connection
-            //closeDBConnection(stmt, con);
-        }
-
-        return user;
-    }
 
     public static User getUser2(int account_num) throws ClassNotFoundException , SQLException {
         User user = null ;
